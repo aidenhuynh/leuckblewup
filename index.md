@@ -144,7 +144,7 @@ function search(list) {
     }
     else {
         for (let i = 0; i < list.length; i++) {
-            item = list[i]["itemName"].toLowerCase()
+            item = list[i]["item"].toLowerCase()
 
             if (item.includes(input) == true) {
                 results.push(list[i])
@@ -198,7 +198,7 @@ function showFavorites(list) {
         console.log('box status was false')
         for (let i = 0; i < localStorage.length; i++) {
             for (let k = 0; k < list.length; k++) {
-                if (localStorage.getItem(localStorage.key(i)).slice(6) == list[k]["itemOutput"]["itemName"]) {
+                if (localStorage.getItem(localStorage.key(i)).slice(6) == list[k]["item"]) {
                     favoritesList.push(list[k])
                     console.log(favoritesList)
                 }
@@ -209,10 +209,12 @@ function showFavorites(list) {
 
             document.getElementById('bruh').innerHTML = " \
                 <tr> \
+                    <th></th> \
+                    <th>Date</th> \
+                    <th>Action</th> \
+                    <th>User</th> \
                     <th>Item</th> \
-                    <th colspan='3'>Recipe </th> \
-                    <th colspan='3'></th> \
-                    <th>Output</th> \
+                    <th>Quantity</th> \
                 </tr> \
                 "
         
@@ -222,17 +224,13 @@ function showFavorites(list) {
 
                 document.getElementById('bruh').innerHTML += '\
                 <tr> \
-                    <td rowspan="3" style="text-align:center"><img id="' + starId + `" onclick="favorite('` + starId + `')" src="images/star.png" height="50px" width="auto"></td> \
-                    <td rowspan="3">` + favoritesList[n]["itemName"] + '</td> \
-                    \
-                    ' + createRow(favoritesList, n, 0) + ' \
-                    \
-                    <td rowspan="3" colspan="3" style="text-align:center"><img src="images/right_arrow.png" style="width:80px;height:30px"></td> \
-                    <td rowspan="3" style="width:50px"><img title="' + favoritesList[n]["itemOutput"]["itemName"]+ ' "src="' + favoritesList[n]["itemOutput"]["imageURL"] + '"style="wrapping:none;width:auto;height:auto;">\n <i style="text-align:right">' + favoritesList[n]["itemQuantity"] + '</i></td> \
-                </tr> \
-                <tr>\n' + createRow(favoritesList, n, 1) + '\n</tr> \
-                <tr>\n' + createRow(favoritesList, n, 2) + '\n</tr> \
-                '
+                    <td style="text-align:center"><img id="' + starId + `" onclick="favorite('` + starId + `')" 'src="images/graystar.png" height="50px" width="auto"></td>\
+                    <td>` + list[i]["date"] + `</td> \
+                    <td>` + list[i]["item"] + `</td> \
+                    <td>` + list[i]["action"] + `</td> \
+                    <td>` + list[i]["user"] + `</td> \
+                    <td>` + list[i]["quantity"] + `</td> \
+                </tr>`
             }
         }
         else {
