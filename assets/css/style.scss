@@ -18,6 +18,12 @@ img {
   table-layout: fixed;
 }
 
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .navbar td {
   text-align:center;
   border: 1px solid #e0e0e0;

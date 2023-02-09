@@ -44,7 +44,7 @@
             <td style="cursor: pointer" onclick="location.href='/logout'">Sign Out</td>
           </tr>
         </table>
-        <img style="aspect-ratio: 10 / 8" src="https://cdn.shopify.com/s/files/1/1061/1924/products/Flushed_Emoji_Icon_5e6ce936-4add-472b-96ba-9082998adcf7.png?v=1485573448">
+        <img onclick="boxClick()" id="image" class="center" style="width:70%; height:auto" src="./images/box.png">
         {% endif %}
       </header>
       <section>
@@ -68,3 +68,14 @@
     <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>
   </body>
 </html>
+<script>
+  var clicks = 0
+
+  function boxClick() {
+    clicks += 1
+    if (clicks == 10) {
+      document.getElementById('image').src = "https://miro.medium.com/max/1024/1*LLwGMZ3TWKNyKwEqEJezJA.gif"
+      document.getElementById('image').style = "width:60%"
+    }
+  }
+</script>
