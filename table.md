@@ -105,14 +105,121 @@ form.addEventListener('submit', function(event) {
   const userCell = row.insertCell(2);
   const itemCell = row.insertCell(3);
   const quantityCell = row.insertCell(4);
+  const actionCellLast = row.insertCell(5);
 
   dateCell.innerHTML = date;
   actionCell.innerHTML = action;
   userCell.innerHTML = user;
   itemCell.innerHTML = item;
   quantityCell.innerHTML = quantity;
+
+  const editBtn = document.createElement('button');
+  editBtn.innerHTML = 'Edit';
+  editBtn.classList.add('edit-btn');
+  editBtn.addEventListener('click', function() {
+    // code for edit functionality here
+  editBtn.addEventListener('click', function() {
+  // Get the current values in the cells
+  const date = dateCell.innerHTML;
+  const action = actionCell.innerHTML;
+  const user = userCell.innerHTML;
+  const item = itemCell.innerHTML;
+  const quantity = quantityCell.innerHTML;
+
+  // Clear the cells
+  dateCell.innerHTML = '';
+  actionCell.innerHTML = '';
+  userCell.innerHTML = '';
+  itemCell.innerHTML = '';
+  quantityCell.innerHTML = '';
+  actionCellLast.innerHTML = '';
+
+  // Create new input elements
+  const dateInput = document.createElement('input');
+  dateInput.value = date;
+  const actionInput = document.createElement('input');
+  actionInput.value = action;
+  const userInput = document.createElement('input');
+  userInput.value = user;
+  const itemInput = document.createElement('input');
+  itemInput.value = item;
+  const quantityInput = document.createElement('input');
+  quantityInput.value = quantity;
+
+  // Append the input elements to the cells
+  dateCell.appendChild(dateInput);
+  actionCell.appendChild(actionInput);
+  userCell.appendChild(userInput);
+  itemCell.appendChild(itemInput);
+  quantityCell.appendChild(quantityInput);
+
+  // Create a save button
+  const saveBtn = document.createElement('button');
+  saveBtn.innerHTML = 'Save';
+  saveBtn.classList.add('save-btn');
+  saveBtn.addEventListener('click', function() {
+    // Save the values in the input elements to the cells
+    dateCell.innerHTML = dateInput.value;
+    actionCell.innerHTML = actionInput.value;
+    userCell.innerHTML = userInput.value;
+    itemCell.innerHTML = itemInput.value;
+    quantityCell.innerHTML = quantityInput.value;
+
+    // Remove the input elements and save button
+    dateCell.removeChild(dateInput);
+    actionCell.removeChild(actionInput);
+    userCell.removeChild(userInput);
+    itemCell.removeChild(itemInput);
+    quantityCell.removeChild(quantityInput);
+    actionCellLast.removeChild(saveBtn);
+
+    // Add the edit and delete buttons back to the action cell
+    actionCellLast.appendChild(editBtn);
+    actionCellLast.appendChild(deleteBtn);
+  });
+
+  // Append the save button to the action cell
+  actionCellLast.appendChild(saveBtn);
 });
+  });
+  
+  const deleteBtn = document.createElement('button');
+  deleteBtn.innerHTML = 'Delete';
+  deleteBtn.classList.add('delete-btn');
+  deleteBtn.addEventListener('click', function() {
+    // code for delete functionality here
+    row.remove();
+  });
+
+  actionCellLast.appendChild(editBtn);
+  actionCellLast.appendChild(deleteBtn);
+});
+
 </script>
+
+<style>
+  .edit-btn, .delete-btn {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 6px 14px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .edit-btn {
+    background-color: #008CBA;
+  }
+
+  .delete-btn {
+    background-color: #f44336;
+  }
+</style>
 
 
 <!-- The JavaScript code does the following:
