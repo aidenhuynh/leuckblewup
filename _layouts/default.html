@@ -34,14 +34,14 @@
         {% if site.show_downloads %}
         <table class="navbar">
           <tr>
-            <td style="cursor: pointer" onclick="location.href='/'">Home</td>
-            <td style="cursor: pointer" onclick="location.href='/table'">Data</td>
-            <td style="cursor: pointer" onclick="location.href='/tracker'">Tracker</td>
+            <td style="cursor: pointer" onclick="location.href='{{site.baseurl}}/'">Home</td>
+            <td style="cursor: pointer" onclick="location.href='{{site.baseurl}}/table'">Data</td>
+            <td style="cursor: pointer" onclick="location.href='{{site.baseurl}}/tracker'">Tracker</td>
           </tr>
           <tr>
-            <td style="cursor: pointer" onclick="location.href='/signup'">Sign Up</td>
-            <td style="cursor: pointer" onclick="location.href='/signin'">Sign In</td>
-            <td style="cursor: pointer" onclick="location.href='/logout'">Sign Out</td>
+            <td style="cursor: pointer" onclick="location.href='{{site.baseurl}}/signup'">Sign Up</td>
+            <td style="cursor: pointer" onclick="location.href='{{site.baseurl}}/signin'">Sign In</td>
+            <td style="cursor: pointer" onclick="location.href='{{site.baseurl}}/logout'">Sign Out</td>
           </tr>
         </table>
         <img onclick="boxClick()" id="image" class="center" style="width:70%; height:auto" src="./images/box.png">
