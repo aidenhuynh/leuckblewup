@@ -222,18 +222,201 @@ form.addEventListener('submit', function(event) {
 </style>
 
 
-<!-- The JavaScript code does the following:
 
-Retrieves references to the form element and table element using document.getElementById().
 
-Attaches an event listener to the form element that listens for the "submit" event. The event listener is a function that is called whenever the form is submitted.
 
-In the event listener function, the function prevents the default form submission behavior using event.preventDefault().
 
-The function retrieves the values of the form input fields using document.getElementById() and stores them in variables.
 
-The function creates a new row in the table using the table.insertRow() method, and then inserts cells into the new row using the row.insertCell() method.
 
-The function sets the contents of the cells using the innerHTML property. The contents of the cells are the values of the form input fields.
 
-As a result, when the form is submitted, the values of the form input fields are added as a new row in the table. -->
+<html lang="en">
+<head>
+    <title>Inventory</title>
+</head>
+<body>
+    <h1>Inventory</h1>
+    <i>Enter the name of your company to get started</i>
+    <input placeholder="Company" id="company" />
+    <p>If you already have saved inventory, enter your company name above and hit "load inventory"</p>
+    <button onclick="loadInventory()">Load Inventory</button>
+
+  <hr />
+    <div id="existingInventory">
+    </div>
+    <div id="InventoryBox">
+        <div>
+    <h2>Add Inventory</h2>
+    <form id="anInventory">
+        <input placeholder="Name of Inventory" id="inventory_name" />
+        <input placeholder="Action" id="action" />
+        <input placeholder="Quantity" id="quantity" />
+        <textarea placeholder="Extra Notes" id="extra_notes"></textarea>
+        <input type="submit" />
+    </form>
+
+</div>
+<div id="previewInventory">
+    <h2>Preview Inventory</h2>
+    <p id="InventoryName">Inventory Name: N/A</p>
+    <p id="Action">Action: N/A</p>
+    <p id="Quantity">Quantity: N/A</p>
+    <p id="ExtraNotes">Extra Notes: N/A</p>
+    <button onclick="deleteInventory()">Delete Inventory</button>
+</div>
+</div>
+
+</body>
+
+<script>
+    let InventoryLoader = {}
+    let currentInventory = -1
+    // change in AWS
+    const url = ""
+
+    const previewInventory = (inventory) => {
+        document.getElementById("InventoryName").innerHTML = "Inventory Name: " + inventory.inventory_name
+        document.getElementById("Action").innerHTML = "Action: " + inventory.action
+        document.getElementById("Quantity").innerHTML = "Quantity: " + inventory.quantity + " of them"
+        document.getElementById("ExtraNotes").innerHTML = "Extra Notes:\n" + inventory.extra_notes
+        currentInventory = inventory.id
+    }
+
+    const loadInventory = () => {
+        const company = document.getElementById("company").value
+        if (company === "") {alert("Invalid company name!"); return}
+        try {
+        fetch(url + new URLSearchParams({Company: company})).then(data => data.json()).then(json => {
+            document.getElementById("existingInventory").innerHTML = ""
+            
+            json.forEach(inventory => {
+                const button = document.createElement("button")
+                button.innerHTML = inventory.inventory_name
+                inventoryLoader[inventory.id] = JSON.parse(JSON.stringify(inventory))
+                button.onclick = () => previewInventory(inventoryLoader[inventory.id])
+                document.getElementById("existingInventory").appendChild(button)
+            })
+
+            localStorage.setItem("company", company)
+        })
+    } catch {
+        alert("Company not found!")
+    }
+    }
+
+    const deleteInventory = () => {
+        if (currentInventory < 0) {
+            alert("invalid inventory!")
+            return
+        }
+
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({id: currentInventory})
+        }).then(() => {
+            alert("Success, deleted!")
+            loadInventory()
+        })
+    }
+
+    document.getElementById("anInventory").addEventListener("submit", (e) => {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        const fields = [
+            "inventory_name",
+            "company",
+            "action",
+            "quantity",
+            "extra_notes"
+        ]
+        const values = fields.map((f) => document.getElementById(f).value)
+        if (values.indexOf("") !== -1) {
+            alert("Please fill out all the fields!")
+            return
+        }
+
+        const zip = (a, b) => a.map((k, i) => [k, b[i]]);
+        const dict = Object.fromEntries(
+            zip(
+                fields.map(f => f.toLowerCase()), 
+                values
+            )
+        )
+        dict["Company"] = dict["company"]
+        delete dict["company"]
+        dict["action"] = parseInt(dict["action"])
+        dict["quantity"] = parseInt(dict["quantity"])
+        
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dict)
+        }).then((data) =>data.json()).then(data => {
+            previewInventory(data)
+            loadInventory()
+        })
+    })
+
+    const maybeCompany = localStorage.getItem("company")
+    if (maybeCompany !== null) {
+        document.getElementById("company").value = maybeCompany
+        loadInventory()
+    }
+</script>
+
+<style>
+    input, textarea {
+        display: block;
+        width: 400px;
+
+        background-color: white;
+        outline: none;
+        border: 1px solid brown;
+        padding: 4px;
+        margin: 6px 0px;
+        font-size: 18px;
+    }
+
+    hr {
+        margin-top: 20px;
+    }
+
+    #existingInventory {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    button {
+        background-color: #ffcc00;
+        outline: none;
+        border: 1px solid #ffcc00;
+        color: black;
+        padding: 6px;
+        font-size: 18px;
+        transition: all 0.1s linear;
+    }
+
+    button:hover {
+        background-color: #aa8800;
+        border: 1px solid #aa8800;
+        transform: translateY(-5px);
+    }
+
+    #InventoryBox {
+        display: flex;
+        flex-direction: row;
+        gap: 40px
+    }
+
+    #previewInventory > p {
+        margin: 4px 0px;
+        font-size: 18px;
+    }
+</style>
+</html>
