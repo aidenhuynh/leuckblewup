@@ -52,9 +52,12 @@ submitBtn.addEventListener('click', async () => {
     </tr>
   ` + resultTable.innerHTML;
 });
+</script>
+
+<html>
   <head>
     <meta charset="utf-8">
-    <title>Phone Data</title>
+    <title>API Phone Data</title>
   </head>
   <body>
     <h1>Phone Data</h1>
@@ -92,6 +95,6 @@ submitBtn.addEventListener('click', async () => {
           console.error(error);
         });
     </script>
-  <body>
+  </body>
   <body>
 <html>
