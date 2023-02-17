@@ -1,97 +1,53 @@
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Phone Number Table</title>
-    <style>
-      table {
-        border-collapse: collapse;
-        width: 100%;
-      }
-      th, td {
-        text-align: left;
-        padding: 8px;
-      }
-      th {
-        background-color: #444444;
-        color: white;
-      }
-      tr:nth-child(even) {
-        background-color: #f2f2f2;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Phone Number Table</h1>
-    <form id="myForm">
-      <label for="userID">User ID:</label>
-      <input type="text" id="userID" name="userID"><br><br>
-      <label for="phoneNumber">Phone Number:</label>
-      <input type="text" id="phoneNumber" name="phoneNumber"><br><br>
-      <button type="button" onclick="postData()">Submit</button>
-    </form>
-    <br><br>
-    <table id="phoneTable">
-      <tr>
-        <th>User ID</th>
-        <th>Phone Number</th>
-        <th>Location</th>
-        <th>Timezone</th>
-        <th>Time</th>
-      </tr>
+<head>
+    <meta charset="utf-8">
+    <title>Phone Data</title>
+</head>
+<body>
+    <table id="phone-table">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Phone Number</th>
+                <th>Location</th>
+                <th>Timezone</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
     </table>
     <script>
-      function postData() {
-        let userID = document.getElementById("userID").value;
-        let phoneNumber = document.getElementById("phoneNumber").value;
-        fetch('/api/phone', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            'userID': userID,
-            'phoneNumber': phoneNumber
-          })
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
-          document.getElementById("userID").value = "";
-          document.getElementById("phoneNumber").value = "";
-          getPhoneData();
-        });
-      }
-      function getPhoneData() {
+        // Fetch the data from the API
         fetch('https://jasj-inventory.duckdns.org/api/phone')
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
-          let table = document.getElementById("phoneTable");
-          table.innerHTML = `
-            <tr>
-              <th>User ID</th>
-              <th>Phone Number</th>
-              <th>Location</th>
-              <th>Timezone</th>
-              <th>Time</th>
-            </tr>
-          `;
-          data.forEach(row => {
-            table.innerHTML += `
-              <tr>
-                <td>${row.user_id}</td>
-                <td>${row.phone_number}</td>
-                <td>${row.location}</td>
-                <td>${row.timezone}</td>
-                <td>${row.time}</td>
-              </tr>
-            `;
-          });
-        });
-      }
-      document.addEventListener("DOMContentLoaded", function(event) {
-        getPhoneData();
-      });
+            .then(response => response.json())
+            .then(data => {
+                // Get the table body
+                const tableBody = document.querySelector('#phone-table tbody');
+                // Add each row of data to the table
+                data.forEach(row => {
+                    // Create a new table row
+                    const tableRow = document.createElement('tr');
+                    // Add the data to the row
+                    const userIdCell = document.createElement('td');
+                    userIdCell.textContent = row[0];
+                    tableRow.appendChild(userIdCell);
+                    const phoneNumberCell = document.createElement('td');
+                    phoneNumberCell.textContent = row[1];
+                    tableRow.appendChild(phoneNumberCell);
+                    const locationCell = document.createElement('td');
+                    locationCell.textContent = row[2];
+                    tableRow.appendChild(locationCell);
+                    const timezoneCell = document.createElement('td');
+                    timezoneCell.textContent = row[3];
+                    tableRow.appendChild(timezoneCell);
+                    const timeCell = document.createElement('td');
+                    timeCell.textContent = row[4];
+                    tableRow.appendChild(timeCell);
+                    // Add the row to the table body
+                    tableBody.appendChild(tableRow);
+                });
+            });
     </script>
-  </body>
+</body>
 </html>
