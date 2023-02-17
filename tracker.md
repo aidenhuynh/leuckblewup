@@ -62,7 +62,7 @@
         });
       }
       function getPhoneData() {
-        fetch('/api/phone')
+        fetch('https://jasj-inventory.duckdns.org/api/phone')
         .then(response => response.json())
         .then(data => {
           console.log(data);
