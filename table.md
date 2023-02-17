@@ -1,239 +1,428 @@
-<form id="inventory-form">
-  <div>
-    <label for="date">Date:</label>
-    <input type="text" id="date" name="date">
-  </div>
-  <div>
-    <label for="action">Action:</label>
-    <input type="text" id="action" name="action">
-  </div>
-  <div>
-    <label for="user">User:</label>
-    <input type="text" id="user" name="user">
-  </div>
-  <div>
-    <label for="item">Item:</label>
-    <input type="text" id="item" name="item">
-  </div>
-  <div>
-    <label for="quantity">Quantity:</label>
-    <input type="text" id="quantity" name="quantity">
-  </div>
-  <button type="submit" id="add-activity-btn">Add Activity</button>
-
 <style>
-  #inventory-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
+    table {
+        table-layout:fixed
+    }
 
-  #inventory-form div {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-  }
+    .quantity {
+        text-align:right
+    }
 
-  label {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
+    td {
+        padding:5px 10px;
+    }
 
-  input[type="text"] {
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid gray;
-  }
+    input.search {
+        color: #434343;
+        border: 0px;
+        margin-left: 2%;
+        width: 86.7%;
+        white-space: nowrap
+    }
 
-  #add-activity-btn {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px;
-  }
+    input.check {
+        margin-right: 2%
+    }
 
-  #inventory-table {
-    border-collapse: collapse;
-    width: 100%;
-  }
-
-  #inventory-table th, td {
-    border: 1px solid black;
-    padding: 8px;
-    text-align: left;
-  }
-
-  #inventory-table th {
-    background-color: lightgray;
-  }
+    input.adders{
+        width:100%
+    }
 </style>
 
-</form>
+# Inventory:
+<label for="searchBar"> Search: <input class="search" name="searchBar" id="searchBar" placeholder="Enter item name here"></label>
+<br><br>
+<label><input type="checkbox" class="check" id="checkBox" onclick="showFavorites(dataList)"> Show favorites only</label>
+<!-- checkbox for showing only favorites -->
 
-<table id="inventory-table">
-  <tr>
-    <th>Date</th>
-    <th>Action</th>
-    <th>User</th>
-    <th>Item</th>
-    <th>Quantity</th>
-  </tr>
+<table>
+    <tr>
+        <th style="width:auto"></th>
+        <th style="width:15%">Date</th>
+        <th style="width:15%">Item</th>
+        <th style="width:13%">Action</th>
+        <th style="width:auto">User</th>
+        <th style="width:auto; text-align:right">Quantity</th>
+    </tr>
+    <tr>
+        <td><button style="width:100%" type="submit" id="addButton" onclick="addData()">Add</button></td>
+        <td><input class="adders" placeholder="MM-DD-YYYY" id="dateInput" pattern="[0-9]{2}-[0-9]{2}-[0-9]{2}"></td>
+        <td><input class="adders" placeholder="Item Name" id="itemInput"></td>
+        <td><input class="adders" placeholder="Action" id="actionInput"></td>
+        <td><input class="adders" placeholder="User" id="userInput"></td>
+        <td><input class="adders" placeholder="Quantity" id="quantityInput"></td>
+    </tr>
+    <tr><td></td><td colspan="5"><i id="textRow"></i></td></tr>
+</table>
+
+<table>
+    <tbody id="bruh">
+    <tr>
+        <th style="width:auto"></th>
+        <th style="width:15%">Date</th>
+        <th style="width:15%">Item</th>
+        <th style="width:13%">Action</th>
+        <th style="width:auto">User</th>
+        <th style="width:auto; text-align:right">Quantity</th>
+    </tr>
+    </tbody>
 </table>
 
 <script>
-const form = document.getElementById('inventory-form');
-const table = document.getElementById('inventory-table');
+// Notes for making this work when we have backend:
 
-form.addEventListener('submit', function(event) {
-  event.preventDefault();
+// change images
+// fix createRow
+// change all the "list"
 
-  const date = document.getElementById('date').value;
-  const action = document.getElementById('action').value;
-  const user = document.getElementById('user').value;
-  const item = document.getElementById('item').value;
-  const quantity = document.getElementById('quantity').value;
+const options = {
+  method: 'GET',
+};
 
-  const row = table.insertRow();
-  const dateCell = row.insertCell(0);
-  const actionCell = row.insertCell(1);
-  const userCell = row.insertCell(2);
-  const itemCell = row.insertCell(3);
-  const quantityCell = row.insertCell(4);
-  const actionCellLast = row.insertCell(5);
+dataList = [
+    {
+        "id":1,
+        "date":"01-05-2023",
+        "action":"Shipped",
+        "user":"aidenhuynh",
+        "item":"Pencils",
+        "quantity":"1500",
+    },
+    {
+        "id":2,
+        "date":"02-07-2023",
+        "action":"Delivered",
+        "user":"TheGerbil21",
+        "item":"Pens",
+        "quantity":"1000",
+    },
+    {
+        "id":3,
+        "date":"02-02-2023",
+        "action":"Packaged",
+        "user":"aidenhuynh",
+        "item":"Markers",
+        "quantity":"300",
+    },
+    {
+        "id":4,
+        "date":"01-15-2023",
+        "action":"In Transit",
+        "user":"aidenhuynh",
+        "item":"Highlighters",
+        "quantity":"100",
+    },
+    {
+        "id":5,
+        "date":"01-05-2023",
+        "action":"Shipped",
+        "user":"aidenhuynh",
+        "item":"Pencils",
+        "quantity":"1500",
+    },
+    {
+        "id":6,
+        "date":"02-07-2023",
+        "action":"Delivered",
+        "user":"TheGerbil21",
+        "item":"Pens",
+        "quantity":"1000",
+    },
+    {
+        "id":7,
+        "date":"02-02-2023",
+        "action":"Packaged",
+        "user":"aidenhuynh",
+        "item":"Markers",
+        "quantity":"300",
+    },
+    {
+        "id":8,
+        "date":"01-15-2023",
+        "action":"In Transit",
+        "user":"aidenhuynh",
+        "item":"Highlighters",
+        "quantity":"100",
+    },
+    {
+        "id":9,
+        "date":"01-05-2023",
+        "action":"Shipped",
+        "user":"aidenhuynh",
+        "item":"Pencils",
+        "quantity":"1500",
+    },
+    {
+        "id":10,
+        "date":"02-07-2023",
+        "action":"Delivered",
+        "user":"TheGerbil21",
+        "item":"Pens",
+        "quantity":"1000",
+    },
+    {
+        "id":11,
+        "date":"02-02-2023",
+        "action":"Packaged",
+        "user":"aidenhuynh",
+        "item":"Markers",
+        "quantity":"300",
+    },
+    {
+        "id":12,
+        "date":"01-15-2023",
+        "action":"In Transit",
+        "user":"aidenhuynh",
+        "item":"Highlighters",
+        "quantity":"100",
+    },
+]
 
-  dateCell.innerHTML = date;
-  actionCell.innerHTML = action;
-  userCell.innerHTML = user;
-  itemCell.innerHTML = item;
-  quantityCell.innerHTML = quantity;
+// fetch('https://pokeapi.co/api/v2/pokemon/', options)
+//     .then(response => response.json().then(data => {
+//     for (let i = 0; i < data.length; i++) {
+//         dataList.push(data.sample[i])
+//     }
+//     }))
+// update when there is backend and remove that ugly list of dictionaries
 
-  const editBtn = document.createElement('button');
-  editBtn.innerHTML = 'Edit';
-  editBtn.classList.add('edit-btn');
-  editBtn.addEventListener('click', function() {
-    // code for edit functionality here
-  editBtn.addEventListener('click', function() {
-  // Get the current values in the cells
-  const date = dateCell.innerHTML;
-  const action = actionCell.innerHTML;
-  const user = userCell.innerHTML;
-  const item = itemCell.innerHTML;
-  const quantity = quantityCell.innerHTML;
+var boxStatus = false
 
-  // Clear the cells
-  dateCell.innerHTML = '';
-  actionCell.innerHTML = '';
-  userCell.innerHTML = '';
-  itemCell.innerHTML = '';
-  quantityCell.innerHTML = '';
-  actionCellLast.innerHTML = '';
+function getItems(list) {
+    for (let i = 0; i < list.length; i++) {
+        let starId = "Star: " + list[i]["id"]
+        document.getElementById('bruh').innerHTML += '\
+        <tr> \
+            <td style="text-align:center"><img id="' + starId + `" onclick="favorite('` + starId + `')" src="images/graystar.png" height="40px" width="40px"></td>\
+            <td>` + list[i]["date"] + `</td> \
+            <td>` + list[i]["item"] + `</td> \
+            <td>` + list[i]["action"] + `</td> \
+            <td>` + list[i]["user"] + `</td> \
+            <td class="quantity">` + list[i]["quantity"] + `</td> \
+        </tr> \
+        `
 
-  // Create new input elements
-  const dateInput = document.createElement('input');
-  dateInput.value = date;
-  const actionInput = document.createElement('input');
-  actionInput.value = action;
-  const userInput = document.createElement('input');
-  userInput.value = user;
-  const itemInput = document.createElement('input');
-  itemInput.value = item;
-  const quantityInput = document.createElement('input');
-  quantityInput.value = quantity;
+        for (let a = 0; a < localStorage.length; a++) {
+            if (localStorage.getItem(localStorage.key(a)) == starId) {
+                console.log("Favorited from localStorage: " + starId)
+                document.getElementById(starId).src = 'images/star.png'
+            }
+        }
+    }
+}
 
-  // Append the input elements to the cells
-  dateCell.appendChild(dateInput);
-  actionCell.appendChild(actionInput);
-  userCell.appendChild(userInput);
-  itemCell.appendChild(itemInput);
-  quantityCell.appendChild(quantityInput);
 
-  // Create a save button
-  const saveBtn = document.createElement('button');
-  saveBtn.innerHTML = 'Save';
-  saveBtn.classList.add('save-btn');
-  saveBtn.addEventListener('click', function() {
-    // Save the values in the input elements to the cells
-    dateCell.innerHTML = dateInput.value;
-    actionCell.innerHTML = actionInput.value;
-    userCell.innerHTML = userInput.value;
-    itemCell.innerHTML = itemInput.value;
-    quantityCell.innerHTML = quantityInput.value;
 
-    // Remove the input elements and save button
-    dateCell.removeChild(dateInput);
-    actionCell.removeChild(actionInput);
-    userCell.removeChild(userInput);
-    itemCell.removeChild(itemInput);
-    quantityCell.removeChild(quantityInput);
-    actionCellLast.removeChild(saveBtn);
+function search(list) {
+    document.getElementById('bruh').innerHTML = " \
+    <tr> \
+        <th style='width:auto'></th> \
+        <th style='width:15%'>Date</th> \
+        <th style='width:15%'>Item</th> \
+        <th style='width:13%'>Action</th> \
+        <th style='width:auto'>User</th> \
+        <th style='width:auto; text-align:right'>Quantity</th> \
+    </tr> \
+    "
 
-    // Add the edit and delete buttons back to the action cell
-    actionCellLast.appendChild(editBtn);
-    actionCellLast.appendChild(deleteBtn);
-  });
+    results = []
+    input = document.getElementById('searchBar').value.toLowerCase()
 
-  // Append the save button to the action cell
-  actionCellLast.appendChild(saveBtn);
-});
-  });
-  
-  const deleteBtn = document.createElement('button');
-  deleteBtn.innerHTML = 'Delete';
-  deleteBtn.classList.add('delete-btn');
-  deleteBtn.addEventListener('click', function() {
-    // code for delete functionality here
-    row.remove();
-  });
+    if (input == "" || input == null) {
+        getItems(dataList)
+    }
+    else {
+        for (let i = 0; i < list.length; i++) {
+            item = list[i]["item"].toLowerCase()
 
-  actionCellLast.appendChild(editBtn);
-  actionCellLast.appendChild(deleteBtn);
-});
+            if (item.includes(input) == true) {
+                results.push(list[i])
+            }
+        }
+        if (results.length == 0) {
+            document.getElementById('bruh').innerHTML = " \
+            <tr> \
+                <th style='width:auto'></th> \
+                <th style='width:15%'>Date</th> \
+                <th style='width:15%'>Item</th> \
+                <th style='width:13%'>Action</th> \
+                <th style='width:auto'>User</th> \
+                <th style='width:auto; text-align:right'>Quantity</th> \
+            </tr> \
+            <tr><td></td><td colspan='5'><i>No results found.</i></td></tr> \
+            "
+            getItems(dataList)
+        }
+        else {
+        getItems(results)
+        }
+    }
+}
 
+function favorite(star) {
+    var checked = false
+
+    for (var i = 0; i < localStorage.length; i++){
+            if (localStorage.getItem(localStorage.key(i)) == star) {
+                console.log("Star Removed: " + star.slice(6))
+                document.getElementById(star).src = 'images/graystar.png'
+                localStorage.removeItem(star)
+                checked = true  
+            }
+        }
+
+        if (checked == false) {
+            console.log("Star Added: " + star.slice(6))
+            document.getElementById(star).src = 'images/star.png'
+            localStorage.setItem(star, star)
+        }
+    if (boxStatus == true) {
+        boxStatus = false
+        showFavorites(dataList)
+    }
+}
+
+function showFavorites(list) {
+    var favoritesList = []
+
+    if (boxStatus == false) {
+        console.log('box status was false')
+        for (let i = 0; i < localStorage.length; i++) {
+            for (let k = 0; k < list.length; k++) {
+                if (localStorage.getItem(localStorage.key(i)).slice(6) == list[k]["id"]) {
+                    favoritesList.push(list[k])
+                    console.log(favoritesList)
+                }
+            }
+        }
+
+        if (favoritesList.length !== 0) {
+
+            document.getElementById('bruh').innerHTML = " \
+                <tr> \
+                    <th style='width:auto'></th> \
+                    <th style='width:15%'>Date</th> \
+                    <th style='width:15%'>Item</th> \
+                    <th style='width:13%'>Action</th> \
+                    <th style='width:auto'>User</th> \
+                    <th style='width:auto; text-align:right'>Quantity</th> \
+                </tr> \
+                "
+        
+            for (let n = 0; n < favoritesList.length; n++) {
+                var starId = localStorage.getItem(localStorage.key(n))
+
+
+                document.getElementById('bruh').innerHTML += '\
+                <tr> \
+                    <td style="text-align:center"><img id="' + starId + `" onclick="favorite('` + starId + `')" src="images/star.png" height="40px" width="40px"></td>\
+                    <td>` + list[n]["date"] + `</td> \
+                    <td>` + list[n]["item"] + `</td> \
+                    <td>` + list[n]["action"] + `</td> \
+                    <td>` + list[n]["user"] + `</td> \
+                    <td class="quantity">` + list[n]["quantity"] + `</td> \
+                </tr>`
+            }
+        }
+        else {
+            document.getElementById('bruh').innerHTML = " \
+            <tr> \
+                <th style='width:auto'></th> \
+                <th style='width:15%'>Date</th> \
+                <th style='width:15%'>Item</th> \
+                <th style='width:13%'>Action</th> \
+                <th style='width:auto'>User</th> \
+                <th style='width:auto; text-align:right'>Quantity</th> \
+            </tr> \
+            <tr><td></td><td colspan='5'><i>No favorites found.</i></td></tr> \
+            "
+            getItems(dataList)
+        }
+    
+    boxStatus = true
+    }
+
+    else {
+        console.log('box status was true')
+        search(dataList)
+        boxStatus = false
+    }
+    
+}
+
+function logStorage() {
+    for (let i=0; i < localStorage.length; i++) {
+        console.log(localStorage.key(i) + ": " + localStorage.getItem(localStorage.key(i)))
+    }
+}
+
+function dateCheck(input) {
+    if (input.length == 10 && isNaN(input.slice(0, 2)) && isNaN(input.slice(3, 5)) && isNaN(input.slice(6, 10)) && input.slice(2,3) == "-" && input.slice(5, 6) == "-") {
+        return true
+    }
+    else {
+        return false
+    }
+}
+
+function addData() {
+    missingFields = []
+    textBox = document.getElementById('textRow')
+    id = dataList.length + 1
+    date = document.getElementById('dateInput').value
+    item = document.getElementById('itemInput').value
+    action = document.getElementById('actionInput').value
+    user = document.getElementById('userInput').value
+    quantity = document.getElementById('quantityInput').value
+
+    if (date == "" || item == "" || action == "" || user == "" || quantity == "") {
+        textBox.innerHTML = "<b>Invalid field(s): </b>"
+
+        if (date == "") {
+            missingFields.push("date")
+        }
+        if (item == "") {
+            missingFields.push("item")
+        }
+        if (action == "") {
+            missingFields.push("action")
+        }
+        if (user == "") {
+            missingFields.push("user")
+        }
+        if (quantity == "") {
+            missingFields.push("quantity")
+        }
+
+        for (let i = 0; i < missingFields.length - 1; i++) {
+            textBox.innerHTML += missingFields[i] + ", "
+        }
+
+        textBox.innerHTML += "and " + missingFields[missingFields.length - 1] + "."
+    }
+    else {
+    textBox.innerHTML = "Item successfully added"
+
+        dataList.push(
+            {
+            "id":id,
+            "date":date,
+            "action":action,
+            "user":user,
+            "item":item,
+            "quantity":quantity,
+            }
+        )
+    
+        search(dataList)
+    }
+
+
+}
+
+searchBar.addEventListener("keyup", function() {
+            search(dataList)
+        }
+    )
+
+getItems(dataList)
 </script>
-
-<style>
-  .edit-btn, .delete-btn {
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 6px 14px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 14px;
-    margin: 4px 2px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  .edit-btn {
-    background-color: #008CBA;
-  }
-
-  .delete-btn {
-    background-color: #f44336;
-  }
-</style>
-
-
-<!-- The JavaScript code does the following:
-
-Retrieves references to the form element and table element using document.getElementById().
-
-Attaches an event listener to the form element that listens for the "submit" event. The event listener is a function that is called whenever the form is submitted.
-
-In the event listener function, the function prevents the default form submission behavior using event.preventDefault().
-
-The function retrieves the values of the form input fields using document.getElementById() and stores them in variables.
-
-The function creates a new row in the table using the table.insertRow() method, and then inserts cells into the new row using the row.insertCell() method.
-
-The function sets the contents of the cells using the innerHTML property. The contents of the cells are the values of the form input fields.
-
-As a result, when the form is submitted, the values of the form input fields are added as a new row in the table. -->
