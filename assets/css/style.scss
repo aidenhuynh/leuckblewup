@@ -2,7 +2,15 @@
 ---
 
 img {
-  overflow:auto
+  overflow:auto;
+}
+
+header {
+  position:relative
+}
+
+footer {
+  position: fixed;
 }
 
 .navbar {
@@ -27,6 +35,15 @@ img {
 .navbar td {
   text-align:center;
   border: 1px solid #e0e0e0;
+}
+
+.navbar td:hover {
+  background-color:rgb(224, 224, 224);
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  transition: background-color 0.2s;
 }
 
 @import "{{ site.theme }}";

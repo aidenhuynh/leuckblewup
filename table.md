@@ -3,6 +3,19 @@
         table-layout:fixed
     }
 
+    .star:hover {
+        filter: brightness(95%);
+        transition: filter 0.2s;
+    }
+
+    .star {
+        cursor: pointer
+    }
+
+    .main td span {
+        cursor: pointer;
+    }
+
     .quantity {
         text-align:right
     }
@@ -13,7 +26,7 @@
 
     input.search {
         color: #434343;
-        border: 0px;
+        border: 0px;    
         margin-left: 2%;
         width: 86.7%;
         white-space: nowrap
@@ -40,18 +53,18 @@
         <th style="width:15%">Date</th>
         <th style="width:15%">Item</th>
         <th style="width:13%">Action</th>
-        <th style="width:auto">User</th>
-        <th style="width:auto; text-align:right">Quantity</th>
+        <th colspan="2" style="width:auto; text-align:left">Quantity</th>
+        <td></td>
     </tr>
     <tr>
-        <td><button style="width:100%" type="submit" id="addButton" onclick="addData()">Add</button></td>
-        <td><input class="adders" placeholder="MM-DD-YYYY" id="dateInput" pattern="[0-9]{2}-[0-9]{2}-[0-9]{2}"></td>
+        <td><button style="width:140%" type="submit" id="addButton" onclick="addData()">Add</button></td>
+        <td><input class="adders" style="width=150%" placeholder="MM-DD-YYYY" id="dateInput" ></td>
         <td><input class="adders" placeholder="Item Name" id="itemInput"></td>
         <td><input class="adders" placeholder="Action" id="actionInput"></td>
-        <td><input class="adders" placeholder="User" id="userInput"></td>
-        <td><input class="adders" placeholder="Quantity" id="quantityInput"></td>
+        <td><input class="adders" style="width:400%" placeholder="Quantity" id="quantityInput"></td>
+        <td colspan="2" ></td>
     </tr>
-    <tr><td></td><td colspan="5"><i id="textRow"></i></td></tr>
+    <tr><td></td><td colspan="6"><i id="textRow"></i></td></tr>
 </table>
 
 <table>
@@ -61,129 +74,34 @@
         <th style="width:15%">Date</th>
         <th style="width:15%">Item</th>
         <th style="width:13%">Action</th>
-        <th style="width:auto">User</th>
         <th style="width:auto; text-align:right">Quantity</th>
+        <th></th>
     </tr>
     </tbody>
 </table>
+<button type="submit" onclick="clearStars();search(dataList)">Clear favorites</button>
 
 <script>
-// Notes for making this work when we have backend:
+const mainApi = "http://0.0.0.0:8086/api/mainData/"
 
-// change images
-// fix createRow
-// change all the "list"
+var uid = "aidenhuynh"
 
-const options = {
-  method: 'GET',
-};
+var dataTypes = ["date", "item", "action", "quantity"]
 
-dataList = [
-    {
-        "id":1,
-        "date":"01-05-2023",
-        "action":"Shipped",
-        "user":"aidenhuynh",
-        "item":"Pencils",
-        "quantity":"1500",
-    },
-    {
-        "id":2,
-        "date":"02-07-2023",
-        "action":"Delivered",
-        "user":"TheGerbil21",
-        "item":"Pens",
-        "quantity":"1000",
-    },
-    {
-        "id":3,
-        "date":"02-02-2023",
-        "action":"Packaged",
-        "user":"aidenhuynh",
-        "item":"Markers",
-        "quantity":"300",
-    },
-    {
-        "id":4,
-        "date":"01-15-2023",
-        "action":"In Transit",
-        "user":"aidenhuynh",
-        "item":"Highlighters",
-        "quantity":"100",
-    },
-    {
-        "id":5,
-        "date":"01-05-2023",
-        "action":"Shipped",
-        "user":"aidenhuynh",
-        "item":"Pencils",
-        "quantity":"1500",
-    },
-    {
-        "id":6,
-        "date":"02-07-2023",
-        "action":"Delivered",
-        "user":"TheGerbil21",
-        "item":"Pens",
-        "quantity":"1000",
-    },
-    {
-        "id":7,
-        "date":"02-02-2023",
-        "action":"Packaged",
-        "user":"aidenhuynh",
-        "item":"Markers",
-        "quantity":"300",
-    },
-    {
-        "id":8,
-        "date":"01-15-2023",
-        "action":"In Transit",
-        "user":"aidenhuynh",
-        "item":"Highlighters",
-        "quantity":"100",
-    },
-    {
-        "id":9,
-        "date":"01-05-2023",
-        "action":"Shipped",
-        "user":"aidenhuynh",
-        "item":"Pencils",
-        "quantity":"1500",
-    },
-    {
-        "id":10,
-        "date":"02-07-2023",
-        "action":"Delivered",
-        "user":"TheGerbil21",
-        "item":"Pens",
-        "quantity":"1000",
-    },
-    {
-        "id":11,
-        "date":"02-02-2023",
-        "action":"Packaged",
-        "user":"aidenhuynh",
-        "item":"Markers",
-        "quantity":"300",
-    },
-    {
-        "id":12,
-        "date":"01-15-2023",
-        "action":"In Transit",
-        "user":"aidenhuynh",
-        "item":"Highlighters",
-        "quantity":"100",
-    },
-]
+var uidNum =""
 
-// fetch('https://pokeapi.co/api/v2/pokemon/', options)
-//     .then(response => response.json().then(data => {
-//     for (let i = 0; i < data.length; i++) {
-//         dataList.push(data.sample[i])
-//     }
-//     }))
-// update when there is backend and remove that ugly list of dictionaries
+const optionsGET = {
+    mode: 'cors',
+    method: 'GET'
+}
+
+const optionsDELETE =  {
+    mode: 'cors',
+    body: JSON.stringify(""),
+    method: 'DELETE'
+}
+
+var dataList = []
 
 var boxStatus = false
 
@@ -191,13 +109,13 @@ function getItems(list) {
     for (let i = 0; i < list.length; i++) {
         let starId = "Star: " + list[i]["id"]
         document.getElementById('bruh').innerHTML += '\
-        <tr> \
-            <td style="text-align:center"><img id="' + starId + `" onclick="favorite('` + starId + `')" src="images/graystar.png" height="40px" width="40px"></td>\
-            <td>` + list[i]["date"] + `</td> \
-            <td>` + list[i]["item"] + `</td> \
-            <td>` + list[i]["action"] + `</td> \
-            <td>` + list[i]["user"] + `</td> \
-            <td class="quantity">` + list[i]["quantity"] + `</td> \
+        <tr class="main"> \
+            <td style="text-align:center"><img id="' + starId + `" class="star" onclick="favorite('` + starId + `')" src="images/graystar.png" height="40px" width="40px"></td>\
+            <td id = "date_` + list[i]["id"] + `" onclick = "editData('date_` + list[i]["id"] + `')"><span id="datespan_` + list[i]["id"] + `">` + list[i]["date"] + `</span></td> \
+            <td id = "item_` + list[i]["id"] + `" onclick = "editData('item_` + list[i]["id"] + `')"><span id="itemspan_` + list[i]["id"] + `">` + list[i]["item"] + `</span></td> \
+            <td id = "action_` + list[i]["id"] + `" onclick = "editData('action_` + list[i]["id"] + `')"><span id="actionspan_` + list[i]["id"] + `">` + list[i]["action"] + `</span></td> \
+            <td  id = "quantity_` + list[i]["id"] + `" class="quantity" onclick = "editData('quantity_` + list[i]["id"] + `')"><span id="quantityspan_` + list[i]["id"] + `">` + list[i]["quantity"] + `</span></td> \
+            <td style="text-align:center"><img id="` + starId + `" class="star" onclick="dataDelete(` + list[i]["id"] + `)" src="images/deletebutton.png" height="15px"</td>
         </tr> \
         `
 
@@ -219,8 +137,8 @@ function search(list) {
         <th style='width:15%'>Date</th> \
         <th style='width:15%'>Item</th> \
         <th style='width:13%'>Action</th> \
-        <th style='width:auto'>User</th> \
         <th style='width:auto; text-align:right'>Quantity</th> \
+        <th></th> \
     </tr> \
     "
 
@@ -245,8 +163,8 @@ function search(list) {
                 <th style='width:15%'>Date</th> \
                 <th style='width:15%'>Item</th> \
                 <th style='width:13%'>Action</th> \
-                <th style='width:auto'>User</th> \
                 <th style='width:auto; text-align:right'>Quantity</th> \
+                <th></th> \
             </tr> \
             <tr><td></td><td colspan='5'><i>No results found.</i></td></tr> \
             "
@@ -303,8 +221,8 @@ function showFavorites(list) {
                     <th style='width:15%'>Date</th> \
                     <th style='width:15%'>Item</th> \
                     <th style='width:13%'>Action</th> \
-                    <th style='width:auto'>User</th> \
                     <th style='width:auto; text-align:right'>Quantity</th> \
+                    <th></th> \
                 </tr> \
                 "
         
@@ -314,12 +232,12 @@ function showFavorites(list) {
 
                 document.getElementById('bruh').innerHTML += '\
                 <tr> \
-                    <td style="text-align:center"><img id="' + starId + `" onclick="favorite('` + starId + `')" src="images/star.png" height="40px" width="40px"></td>\
+                    <td style="text-align:center"><img id="' + starId + `" class="star" onclick="favorite('` + starId + `')" src="images/star.png" height="40px" width="40px"></td>\
                     <td>` + list[n]["date"] + `</td> \
                     <td>` + list[n]["item"] + `</td> \
                     <td>` + list[n]["action"] + `</td> \
-                    <td>` + list[n]["user"] + `</td> \
                     <td class="quantity">` + list[n]["quantity"] + `</td> \
+                    <td style="text-align:center"><img id="` + starId + `" class="star" onclick="dataDelete(` + list[n]["id"] + `)" src="images/deletebutton.png" height="15px"</td>
                 </tr>`
             }
         }
@@ -330,8 +248,8 @@ function showFavorites(list) {
                 <th style='width:15%'>Date</th> \
                 <th style='width:15%'>Item</th> \
                 <th style='width:13%'>Action</th> \
-                <th style='width:auto'>User</th> \
                 <th style='width:auto; text-align:right'>Quantity</th> \
+                <th></th> \
             </tr> \
             <tr><td></td><td colspan='5'><i>No favorites found.</i></td></tr> \
             "
@@ -349,74 +267,187 @@ function showFavorites(list) {
     
 }
 
+function clearStars() {
+    for (let i=0; i < localStorage.length; i++) {
+        if (localStorage.getItem(localStorage.key(i)).includes("Star")) {
+            localStorage.removeItem(i)
+        }
+    }
+}
+
+function isNumeric(str) {
+  if (typeof str != "string") return false
+  return !isNaN(str) && !isNaN(parseFloat(str))
+}
+
 function logStorage() {
     for (let i=0; i < localStorage.length; i++) {
         console.log(localStorage.key(i) + ": " + localStorage.getItem(localStorage.key(i)))
     }
 }
 
-function dateCheck(input) {
-    if (input.length == 10 && isNaN(input.slice(0, 2)) && isNaN(input.slice(3, 5)) && isNaN(input.slice(6, 10)) && input.slice(2,3) == "-" && input.slice(5, 6) == "-") {
-        return true
+function patternCheck(type, id) {
+    value = document.getElementById(id).value
+
+    if (type.includes("date")) {
+        if (/^[0-9]{2}-[0-9]{2}-[0-9]{2}/.test(value) == false) {
+            return alert("Invalid input: Date\n\nPlease follow the following format: MM-DD-YYYY"); false
+        }
+        else {
+            return true
+        }
     }
-    else {
-        return false
+    else if (type.includes("item")) {
+        if (value == "") {
+            return alert("Invalid input: Item\n\nPlease do not leave the text box blank."); false
+        }
+        else {
+            return true
+        }
+    }
+    else if (type.includes("action")) {
+        if (value == "") {
+            return alert("Invalid input: Action\n\nPlease do not leave the text box blank."); false
+        }
+        else {
+            return true
+        }
+    }
+    else if (type.includes("quantity")) {
+        if (isNumeric(value) == false) {
+            return alert("Invalid input: Quantity\n\nPlease enter a number."); false
+        }
+        else {
+            return true
+        }
     }
 }
 
 function addData() {
-    missingFields = []
     textBox = document.getElementById('textRow')
-    id = dataList.length + 1
+    id = dataList.slice(-1)[0]["id"] + 1
     date = document.getElementById('dateInput').value
     item = document.getElementById('itemInput').value
     action = document.getElementById('actionInput').value
-    user = document.getElementById('userInput').value
     quantity = document.getElementById('quantityInput').value
+    missingFields = []
+    textBox.innerHTML = ""
 
-    if (date == "" || item == "" || action == "" || user == "" || quantity == "") {
-        textBox.innerHTML = "<b>Invalid field(s): </b>"
+    for (let i = 0; i < dataTypes.length; i++) {
+        if (patternCheck(dataTypes[i], dataTypes[i] + "Input")) {
+        }
+        else {
+            missingFields.push(dataTypes[i])
+        }
+    }
 
-        if (date == "") {
-            missingFields.push("date")
-        }
-        if (item == "") {
-            missingFields.push("item")
-        }
-        if (action == "") {
-            missingFields.push("action")
-        }
-        if (user == "") {
-            missingFields.push("user")
-        }
-        if (quantity == "") {
-            missingFields.push("quantity")
-        }
+    if (missingFields.length == 1) {
+        textBox.innerHTML += "<b>Invalid field: </b> " + missingFields[0]
+    }
+    else if (missingFields.length != 0){
+        textBox.innerHTML = "<b>Invalid fields: </b>"
 
-        for (let i = 0; i < missingFields.length - 1; i++) {
-            textBox.innerHTML += missingFields[i] + ", "
+        for (let n = 0; n < missingFields.length - 1; n++) {
+            textBox.innerHTML += missingFields[n] + ", "
         }
-
         textBox.innerHTML += "and " + missingFields[missingFields.length - 1] + "."
     }
     else {
-    textBox.innerHTML = "Item successfully added"
+        textBox.innerHTML = "Item successfully added"
 
-        dataList.push(
-            {
-            "id":id,
-            "date":date,
-            "action":action,
-            "user":user,
-            "item":item,
-            "quantity":quantity,
+        newData = {
+                "id": id,
+                "date": date,
+                "action": action,
+                "item": item,
+                "quantity": quantity,
+                }
+
+        dataList.push(newData)
+
+        fetch(mainApi+"PUT", {
+            mode: 'cors',
+            body: JSON.stringify([uidNum, newData]),
+            method: 'PUT'
             }
         )
-    
+
         search(dataList)
     }
+}
 
+function editData(itemId) {
+    var item = document.getElementById(itemId)
+    var type = ""
+    var id = itemId.slice(itemId.indexOf("_")+1)
+    var input = ""
 
+    for (let i = 0; i < dataTypes.length; i++) {
+        if (itemId.includes(dataTypes[i])) {
+            type = dataTypes[i]
+        }
+    }
+
+    if (item.innerHTML.slice(0, 6) != "<input") {
+        for (let i = 0; i < dataList.length; i++) {
+            if (dataList[i]["id"] == id) {
+                var index = i
+            }
+        }
+
+        item.innerHTML = "<input style='width:100%' placeholder='" + dataList[index][type] + "' id='" + itemId + "_input'>"
+        
+        
+        document.getElementById(itemId + '_input').addEventListener("keyup", function() {
+            if (event.key === "Enter") {
+                input = document.getElementById(itemId + '_input')
+                console.log(itemId+'_input')
+                if (patternCheck(type, itemId + '_input')) {
+                    item.innerHTML = "<span>" + input.value + "</span>"
+
+                    for (let i = 0; i < dataList.length; i++) {
+                        if (dataList[i]["id"] == id) {
+                            dataList[i][type] = input.value
+                        
+                            newData = {
+                                "id": dataList[i]["id"],
+                                "date": dataList[i]["date"],
+                                "action": dataList[i]["action"],
+                                "item": dataList[i]["item"],
+                                "quantity": dataList[i]["quantity"],
+                            }
+
+                            fetch(mainApi+"PATCH", {
+                                mode: 'cors',
+                                body: JSON.stringify([uidNum, id, newData]),
+                                method: 'PATCH'
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        })
+    }
+}
+
+function dataDelete(id) {
+    console.log(id)
+    fetch(mainApi+"DELETE", {
+            mode: 'cors',
+            body: JSON.stringify([uidNum, id]),
+            method: 'DELETE'
+            }
+        )
+    console.log(dataList)
+    for (let i = 0; i < dataList.length; i++) {
+        if (id == dataList[i]["id"]) {
+            console.log(dataList[i] + "removed")
+            dataList.splice(i, 1)
+            console.log(dataList)
+        }
+    }
+    search(dataList)
 }
 
 searchBar.addEventListener("keyup", function() {
@@ -424,5 +455,20 @@ searchBar.addEventListener("keyup", function() {
         }
     )
 
-getItems(dataList)
+function apiGet() {
+    fetch(mainApi, optionsGET)
+        .then(response => response.json().then(data => {
+            for (let i = 0; i < data.length; i++) {
+                if (data[i]["uid"] == uid) {
+                    uidNum = i
+                    dataList = data[i]["userData"]
+                }
+            }
+            getItems(dataList)
+            }
+        )
+    )
+}
+
+apiGet()
 </script>
