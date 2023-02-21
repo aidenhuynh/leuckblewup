@@ -1,132 +1,205 @@
-<form id="inventory-form">
-  <div>
-    <label for="date">Date:</label>
-    <input type="text" id="date" name="date">
-  </div>
-  <div>
-    <label for="action">Action:</label>
-    <input type="text" id="action" name="action">
-  </div>
-  <div>
-    <label for="user">User:</label>
-    <input type="text" id="user" name="user">
-  </div>
-  <div>
-    <label for="item">Item:</label>
-    <input type="text" id="item" name="item">
-  </div>
-  <div>
-    <label for="quantity">Quantity:</label>
-    <input type="text" id="quantity" name="quantity">
-  </div>
-  <button type="submit" id="add-activity-btn">Add Activity</button>
+<html lang="en">
+<head>
+    <title>Inventory Management</title>
+</head>
+<body>
+    <h1>Inventory Management</h1>
+    <i>Enter the name of your company to get started</i>
+    <input placeholder="Username" id="user" />
+    <p>If you already have saved inventory, enter your company name above and hit "load inventory"</p>
+    <button onclick="loadInventory()">Load Inventory</button>
 
-<style>
-  #inventory-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
 
-  #inventory-form div {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-  }
+    <hr />
+    <div id="existingInventory">
+    </div>
+    <div id="inventoryBox">
+        <div>
+    <h2>Add inventory</h2>
+    <form id="aninventory">
+        <input placeholder="Inventory Name" id="inventory_name" />
+        <input placeholder="Quantity" id="quantity" />
+        <input placeholder="Price" id="price" />
+        <input placeholder="Cost" id="cost" />
+        <input placeholder="Delivery" id="delivery" />
+        <textarea placeholder="Extra Notes" id="extra_notes"></textarea>
+        <input type="submit" />
+    </form>
 
-  label {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
+</div>
+<div id="previewInventory">
+    <h2>Preview Inventory</h2>
+    <p id="InventoryName">Inventory Name: N/A</p>
+    <p id="Quantity">Quantity: N/A</p>
+    <p id="Price">Price: N/A</p>
+    <p id="Cost">Cost: N/A</p>
+    <p id="Delivery">Delivery: N/A</p>
+    <p id="ExtraNotes">Extra Notes: N/A</p>
+    <button onclick="deleteInventory()">Delete Inventory</button>
+</div>
+</div>
 
-  input[type="text"] {
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid gray;
-  }
 
-  #add-activity-btn {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px;
-  }
-
-  #inventory-table {
-    border-collapse: collapse;
-    width: 100%;
-  }
-
-  #inventory-table th, td {
-    border: 1px solid black;
-    padding: 8px;
-    text-align: left;
-  }
-
-  #inventory-table th {
-    background-color: lightgray;
-  }
-</style>
-
-</form>
-
-<table id="inventory-table">
-  <tr>
-    <th>Date</th>
-    <th>Action</th>
-    <th>User</th>
-    <th>Item</th>
-    <th>Quantity</th>
-  </tr>
-</table>
+</body>
 
 <script>
-const form = document.getElementById('inventory-form');
-const table = document.getElementById('inventory-table');
+    let inventoryLoader = {}
+    let currentInventory = -1
+    // change in AWS
+    const url = ""
 
-form.addEventListener('submit', function(event) {
-  event.preventDefault();
+    const previewInventory = (inventory) => {
+        document.getElementById("InventoryName").innerHTML = "Inventory Name: " + inventory.inventory_name
+        document.getElementById("Quantity").innerHTML = "Quantity: " + inventory.quantity
+        document.getElementById("Price").innerHTML = "Price: " + inventory.price + " dollars"
+        document.getElementById("Cost").innerHTML = "Cost: " + inventory.cost + " dollars"
+        document.getElementById("Delivery").innerHTML = "Delivery: " + inventory.delivery + " days"
+        document.getElementById("ExtraNotes").innerHTML = "Extra Notes:\n" + inventory.extra_notes
+        currentInventory = inventory.id
+    }
 
-  const date = document.getElementById('date').value;
-  const action = document.getElementById('action').value;
-  const user = document.getElementById('user').value;
-  const item = document.getElementById('item').value;
-  const quantity = document.getElementById('quantity').value;
+    const loadInventory = () => {
+        const user = document.getElementById("user").value
+        if (user === "") {alert("Invalid company!"); return}
+        try {
+        fetch(url + new URLSearchParams({username: user})).then(data => data.json()).then(json => {
+            document.getElementById("existingInventory").innerHTML = ""
+            
+            json.forEach(inventory => {
+                const button = document.createElement("button")
+                button.innerHTML = inventory.inventory_name
+                inventoryLoader[inventory.id] = JSON.parse(JSON.stringify(inventory))
+                button.onclick = () => previewInventory(inventoryLoader[inventory.id])
+                document.getElementById("existingInventory").appendChild(button)
+            })
 
-  const row = table.insertRow();
-  const dateCell = row.insertCell(0);
-  const actionCell = row.insertCell(1);
-  const userCell = row.insertCell(2);
-  const itemCell = row.insertCell(3);
-  const quantityCell = row.insertCell(4);
+            localStorage.setItem("user", user)
+        })
+    } catch {
+        alert("Company not found!")
+    }
+    }
 
-  dateCell.innerHTML = date;
-  actionCell.innerHTML = action;
-  userCell.innerHTML = user;
-  itemCell.innerHTML = item;
-  quantityCell.innerHTML = quantity;
-});
+    const deleteInventory = () => {
+        if (currentInventory < 0) {
+            alert("invalid inventory!")
+            return
+        }
+
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({id: currentInventory})
+        }).then(() => {
+            alert("Success, deleted!")
+            loadInventory()
+        })
+    }
+
+    document.getElementById("aninventory").addEventListener("submit", (e) => {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        const fields = [
+            "inventory_name",
+            "user",
+            "quantity",
+            "price",
+            "cost",
+            "delivery",
+            "extra_notes"
+        ]
+        const values = fields.map((f) => document.getElementById(f).value)
+        if (values.indexOf("") !== -1) {
+            alert("Please fill out all the fields!")
+            return
+        }
+
+        const zip = (a, b) => a.map((k, i) => [k, b[i]]);
+        const dict = Object.fromEntries(
+            zip(
+                fields.map(f => f.toLowerCase()), 
+                values
+            )
+        )
+        dict["username"] = dict["user"]
+        delete dict["user"]
+        dict["quantity"] = parseInt(dict["quantity"])
+        dict["price"] = parseInt(dict["price"])
+        dict["cost"] = parseInt(dict["cost"])
+        dict["delivery"] = parseInt(dict["delivery"])
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dict)
+        }).then((data) =>data.json()).then(data => {
+            previewInventory(data)
+            loadInventory()
+        })
+    })
+
+    const maybeUser = localStorage.getItem("user")
+    if (maybeUser !== null) {
+        document.getElementById("user").value = maybeUser
+        loadInventory()
+    }
 </script>
 
+<style>
+    input, textarea {
+        display: block;
+        width: 400px;
 
-<!-- The JavaScript code does the following:
+        background-color: white;
+        outline: none;
+        border: 1px solid brown;
+        padding: 4px;
+        margin: 6px 0px;
+        font-size: 18px;
+    }
 
-Retrieves references to the form element and table element using document.getElementById().
+    hr {
+        margin-top: 20px;
+    }
 
-Attaches an event listener to the form element that listens for the "submit" event. The event listener is a function that is called whenever the form is submitted.
+    #existingInventory {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
 
-In the event listener function, the function prevents the default form submission behavior using event.preventDefault().
+    button {
+        background-color: #ffcc00;
+        outline: none;
+        border: 1px solid #ffcc00;
+        color: black;
+        padding: 6px;
+        font-size: 18px;
+        transition: all 0.1s linear;
+    }
 
-The function retrieves the values of the form input fields using document.getElementById() and stores them in variables.
+    button:hover {
+        background-color: #aa8800;
+        border: 1px solid #aa8800;
+        transform: translateY(-5px);
+    }
 
-The function creates a new row in the table using the table.insertRow() method, and then inserts cells into the new row using the row.insertCell() method.
+    #inventoryBox {
+        display: flex;
+        flex-direction: row;
+        gap: 40px
+    }
 
-The function sets the contents of the cells using the innerHTML property. The contents of the cells are the values of the form input fields.
+    #previewInventory > p {
+        margin: 4px 0px;
+        font-size: 18px;
+    }
+</style>
+</html>
 
-As a result, when the form is submitted, the values of the form input fields are added as a new row in the table. -->
+
+
