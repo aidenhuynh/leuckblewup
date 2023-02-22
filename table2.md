@@ -8,8 +8,18 @@
     <input placeholder="Username" id="user" />
     <p>If you already have saved inventory, enter your company name above and hit "load inventory"</p>
     <button onclick="loadInventories()">Load Inventory</button>
-
-
+    <table class="teams" border="1">
+      <tr>
+        <th>ID</th>
+        <th>Company</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Cost</th>
+        <th>Delivery</th>
+        <th>Extra Notes</th>
+        <th>Inventory Name</th>
+      </tr>
+    </table>
     <hr />
     <div id="existingInventories">
     </div>
@@ -17,25 +27,16 @@
         <div>
     <h2>Add inventory</h2>
     <form id="aninventory">
-        <input placeholder="Inventory Name" id="inventory_name" />
-        <input placeholder="Quantity" id="quantity" />
-        <input placeholder="Price" id="price" />
-        <input placeholder="Cost" id="cost" />
-        <input placeholder="Delivery" id="delivery" />
-        <textarea placeholder="Extra Notes" id="extra_notes"></textarea>
-        <input type="submit" />
+        <input required placeholder="Username" id="username" />
+        <input required placeholder="Quantity" id="quantity" />
+        <input required placeholder="Inventory Name" id="inventory_name" />
+        <input required placeholder="Price" id="price" />
+        <input required placeholder="Cost" id="cost" />
+        <input required placeholder="Delivery" id="delivery" />
+        <textarea required placeholder="Extra Notes" id="extra_notes"></textarea>
+        <button type="submit" onclick="addInventory()">Add Inventory</button>
     </form>
 
-</div>
-<div id="previewInventory">
-    <h2>Preview Inventory</h2>
-    <p id="InventoryName">Inventory Name: N/A</p>
-    <p id="Quantity">Quantity: N/A</p>
-    <p id="Price">Price: N/A</p>
-    <p id="Cost">Cost: N/A</p>
-    <p id="Delivery">Delivery: N/A</p>
-    <p id="ExtraNotes">Extra Notes: N/A</p>
-    <button onclick="deleteInventory()">Delete Inventory</button>
 </div>
 </div>
 
@@ -58,26 +59,71 @@
         currentInventory = inventory.id
     }
 
+    const addInventory = () => {
+        const username = document.getElementById("username").value
+        const quantity = document.getElementById("quantity").value
+        const inventory_name = document.getElementById("inventory_name").value
+        const price = document.getElementById("price").value
+        const cost = document.getElementById("cost").value
+        const delivery = document.getElementById("delivery").value
+        const extra_notes = document.getElementById("extra_notes").value
+
+        if (user === "") {alert("Invalid company!"); return}
+        data = {username: username, quantity: quantity, inventory_name: inventory_name, price: price, cost: cost, delivery: delivery, extra_notes: extra_notes}
+        var requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        try {
+            fetch(`http://localhost:8086/inventory`, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Success");
+                alert("Added Inventory");
+            })
+            .catch(error => console.error(error));
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     const loadInventories = () => {
+        const teams = document.querySelector(".teams");
+        var rowCount = teams.rows.length;
+        for (var i = rowCount - 1; i >= 1; i--) {
+            teams.deleteRow(i);
+        }
         const user = document.getElementById("user").value
         if (user === "") {alert("Invalid company!"); return}
         try {
-        fetch(url + new URLSearchParams({username: user})).then(data => data.json()).then(json => {
-            document.getElementById("existingInventories").innerHTML = ""
-            
-            json.forEach(inventory => {
-                const button = document.createElement("button")
-                button.innerHTML = inventory.inventory_name
-                inventoryLoader[inventory.id] = JSON.parse(JSON.stringify(inventory))
-                button.onclick = () => previewInventory(inventoryLoader[inventory.id])
-                document.getElementById("existingInventories").appendChild(button)
+            fetch(`http://localhost:8086/inventory?username=` + user)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    data.forEach((data) => {
+                    teams.innerHTML += `
+                <tr>
+                <td>${data.id}</td>
+                    <td>${data.username}</td>
+                    <td>${data.quantity}</td>
+                    <td>${data.price}</td>
+                    <td>${data.cost}</td>
+                    <td>${data.delivery}</td>
+                    <td>${data.extra_notes}</td>
+                    <td>${data.inventory_name}</td>
+                </tr>`;
+                });
+                } else {
+                    alert("Invalid Name");
+                }
             })
-
-            localStorage.setItem("user", user)
-        })
-    } catch {
-        alert("Company not found!")
-    }
+            .catch(error => console.error(error));
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     const deleteInventory = () => {
@@ -98,49 +144,6 @@
         })
     }
 
-    document.getElementById("aninventory").addEventListener("submit", (e) => {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        const fields = [
-            "inventory_name",
-            "user",
-            "quantity",
-            "price",
-            "cost",
-            "delivery",
-            "extra_notes"
-        ]
-        const values = fields.map((f) => document.getElementById(f).value)
-        if (values.indexOf("") !== -1) {
-            alert("Please fill out all the fields!")
-            return
-        }
-
-        const zip = (a, b) => a.map((k, i) => [k, b[i]]);
-        const dict = Object.fromEntries(
-            zip(
-                fields.map(f => f.toLowerCase()), 
-                values
-            )
-        )
-        dict["username"] = dict["user"]
-        delete dict["user"]
-        dict["quantity"] = parseInt(dict["quantity"])
-        dict["price"] = parseInt(dict["price"])
-        dict["cost"] = parseInt(dict["cost"])
-        dict["delivery"] = parseInt(dict["delivery"])
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dict)
-        }).then((data) =>data.json()).then(data => {
-            previewInventory(data)
-            loadInventories()
-        })
-    })
 
     const maybeUser = localStorage.getItem("user")
     if (maybeUser !== null) {
