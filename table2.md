@@ -7,11 +7,11 @@
     <i>Enter the name of your company to get started</i>
     <input placeholder="Username" id="user" />
     <p>If you already have saved inventory, enter your company name above and hit "load inventory"</p>
-    <button onclick="loadInventory()">Load Inventory</button>
+    <button onclick="loadInventories()">Load Inventory</button>
 
 
     <hr />
-    <div id="existingInventory">
+    <div id="existingInventories">
     </div>
     <div id="inventoryBox">
         <div>
@@ -58,19 +58,19 @@
         currentInventory = inventory.id
     }
 
-    const loadInventory = () => {
+    const loadInventories = () => {
         const user = document.getElementById("user").value
         if (user === "") {alert("Invalid company!"); return}
         try {
         fetch(url + new URLSearchParams({username: user})).then(data => data.json()).then(json => {
-            document.getElementById("existingInventory").innerHTML = ""
+            document.getElementById("existingInventories").innerHTML = ""
             
             json.forEach(inventory => {
                 const button = document.createElement("button")
                 button.innerHTML = inventory.inventory_name
                 inventoryLoader[inventory.id] = JSON.parse(JSON.stringify(inventory))
                 button.onclick = () => previewInventory(inventoryLoader[inventory.id])
-                document.getElementById("existingInventory").appendChild(button)
+                document.getElementById("existingInventories").appendChild(button)
             })
 
             localStorage.setItem("user", user)
@@ -94,7 +94,7 @@
             body: JSON.stringify({id: currentInventory})
         }).then(() => {
             alert("Success, deleted!")
-            loadInventory()
+            loadInventories()
         })
     }
 
@@ -138,14 +138,14 @@
             body: JSON.stringify(dict)
         }).then((data) =>data.json()).then(data => {
             previewInventory(data)
-            loadInventory()
+            loadInventories()
         })
     })
 
     const maybeUser = localStorage.getItem("user")
     if (maybeUser !== null) {
         document.getElementById("user").value = maybeUser
-        loadInventory()
+        loadInventories()
     }
 </script>
 
@@ -166,7 +166,7 @@
         margin-top: 20px;
     }
 
-    #existingInventory {
+    #existingInventories {
         display: flex;
         gap: 15px;
         margin-bottom: 15px;
