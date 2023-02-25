@@ -1,25 +1,41 @@
 <html>
-
-<head>
-    <title>Phone Number Form</title>
-</head>
-<body>
-    <form id="myForm" method="POST">
-        <label for="user_id">User ID:</label>
-        <input type="text" id="user_id" name="user_id"><br><br>
-        <label for="phone_number">Phone Number:</label>
-        <input type="text" id="phone_number" name="phone_number"><br><br>
-        <input type="button" value="Submit" onclick="submitForm()">
+  <head>
+    <title>Phone Number Location Lookup</title>
+  </head>
+  <body>
+    <h1>Phone Number Location Lookup</h1>
+    <form id="phone-form">
+      <label for="user_id">User ID:</label>
+      <input type="text" id="user_id" name="user_id" required><br>
+      <label for="phone_number">Phone Number:</label>
+      <input type="text" id="phone_number" name="phone_number" required><br>
+      <button type="submit" id="submit-btn">Submit</button>
     </form>
+    <div id="result"></div>
     <script>
-        function submitForm() {
-            var xhr = new XMLHttpRequest();
-            var formData = new FormData(document.getElementById("myForm"));
-            xhr.open("POST", "/submit");
-            xhr.send(formData);
+      const form = document.getElementById('phone-form');
+      const result = document.getElementById('result');
+      const submitBtn = document.getElementById('submit-btn');
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        try {
+          const response = await fetch('/submit', {
+            method: 'POST',
+            body: formData
+          });
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.text();
+          result.innerText = data;
+        } catch (error) {
+          console.error('Error:', error);
+          result.innerText = 'An error occurred. Please try again later.';
         }
+      });
     </script>
-</body>
+  </body>
 
 <head>
     <meta charset="utf-8">
