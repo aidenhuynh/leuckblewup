@@ -1,6 +1,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phone Number Location Lookup</title>
   </head>
   <body>
@@ -12,6 +13,7 @@
       <input type="text" id="phone_number" name="phone_number" required><br>
       <button type="submit" id="submit-btn">Submit</button>
     </form>
+    <div id="result"></div>
     <h2>Phone Data</h2>
     <table id="phone-table">
       <thead>
@@ -27,14 +29,18 @@
       </tbody>
     </table>
     <script>
+      const form = document.getElementById('phone-form');
+      const result = document.getElementById('result');
+      const submitBtn = document.getElementById('submit-btn');
+      const phoneTable = document.getElementById('phone-table');
       // Helper function to clear the table body
       function clearTable() {
-        const tableBody = document.querySelector('#phone-table tbody');
+        const tableBody = phoneTable.querySelector('tbody');
         tableBody.innerHTML = '';
       }
       // Helper function to add a row to the table
       function addRowToTable(rowData) {
-        const tableBody = document.querySelector('#phone-table tbody');
+        const tableBody = phoneTable.querySelector('tbody');
         const tableRow = document.createElement('tr');
         for (const cellData of rowData) {
           const cell = document.createElement('td');
@@ -43,21 +49,6 @@
         }
         tableBody.appendChild(tableRow);
       }
-      // Fetch the data from the API and populate the table
-      function populateTable() {
-        fetch('https://jasj-inventory.duckdns.org/api/phone')
-          .then(response => response.json())
-          .then(data => {
-            clearTable();
-            for (const row of data) {
-              addRowToTable(row);
-            }
-          });
-      }
-      // Populate the table when the page loads
-      populateTable();
-      // Add event listener to form
-      const form = document.getElementById('phone-form');
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
@@ -70,13 +61,29 @@
             throw new Error('Network response was not ok');
           }
           const data = await response.text();
-          console.log(data);
-          // Update the table
-          populateTable();
+          result.innerText = data;
+          clearTable();
+          // Fetch the updated data from the API and repopulate the table
+          fetch('https://jasj-inventory.duckdns.org/api/phone')
+            .then(response => response.json())
+            .then(data => {
+              for (const row of data) {
+                addRowToTable(row);
+              }
+            });
         } catch (error) {
           console.error('Error:', error);
+          result.innerText = `An error occurred: ${error.message}`;
         }
       });
+      // Fetch the initial data from the API and populate the table
+      fetch('https://jasj-inventory.duckdns.org/api/phone')
+        .then(response => response.json())
+        .then(data => {
+          for (const row of data) {
+            addRowToTable(row);
+          }
+        });
     </script>
   </body>
 </html>
