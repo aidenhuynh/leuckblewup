@@ -14,6 +14,7 @@
       <button type="submit" id="submit-btn">Submit</button>
     </form>
     <div id="result"></div>
+    <br><br>
     <h2>Phone Data</h2>
     <table id="phone-table">
       <thead>
