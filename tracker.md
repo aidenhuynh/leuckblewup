@@ -53,7 +53,7 @@
         event.preventDefault();
         const formData = new FormData(event.target);
         try {
-          const response = await fetch('/submit', {
+          const response = await fetch('https://jasj-inventory.duckdns.org/submit', {
             method: 'POST',
             body: formData
           });
