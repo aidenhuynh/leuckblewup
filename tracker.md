@@ -64,7 +64,7 @@
           result.innerText = data;
           clearTable();
           // Fetch the updated data from the API and repopulate the table
-          fetch('/phone')
+          fetch('https://jasj-inventory.duckdns.org/api/phone')
             .then(response => response.json())
             .then(data => {
               for (const row of data) {
@@ -77,7 +77,7 @@
         }
       });
       // Fetch the initial data from the API and populate the table
-      fetch('/phone')
+      fetch('https://jasj-inventory.duckdns.org/api/phone')
         .then(response => response.json())
         .then(data => {
           for (const row of data) {
