@@ -48,45 +48,31 @@
           cell.textContent = cellData;
           tableRow.appendChild(cell);
         }
+        // Add a delete button for the row
+        const deleteButtonCell = document.createElement('td');
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click', async () => {
+          try {
+            const phoneNumber = rowData[1]; // Get the phone number from the row data
+            const response = await fetch(`https://jasj-inventory.duckdns.org/api/phone/${phoneNumber}`, {
+              method: 'DELETE'
+            });
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            // Fetch the updated data from the API and repopulate the table
+            getPhoneData();
+          } catch (error) {
+            console.error('Error:', error);
+            result.innerText = `An error occurred: ${error.message}`;
+          }
+        });
+        deleteButtonCell.appendChild(deleteButton);
+        tableRow.appendChild(deleteButtonCell);
         tableBody.appendChild(tableRow);
       }
-      // Helper function to fetch phone data from the API and populate the table
-      async function getPhoneData() {
-        try {
-          const response = await fetch('https://jasj-inventory.duckdns.org/api/phone');
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const data = await response.json();
-          clearTable();
-          for (const row of data) {
-            addRowToTable(Object.values(row));
-          }
-        } catch (error) {
-          console.error('Error:', error);
-          result.innerText = `An error occurred: ${error.message}`;
-        }
-      }
-      form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        try {
-          const response = await fetch('https://jasj-inventory.duckdns.org/submit', {
-            method: 'POST',
-            body: formData
-          });
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const data = await response.text();
-          result.innerText = data;
-          // Fetch the updated data from the API and repopulate the table
-          getPhoneData();
-        } catch (error) {
-          console.error('Error:', error);
-          result.innerText = `An error occurred: ${error.message}`;
-        }
-      });
+      ;
       // Fetch the initial phone data and populate the table
       getPhoneData();
     </script>
