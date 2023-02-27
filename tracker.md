@@ -12,36 +12,6 @@
       <button type="submit" id="submit-btn">Submit</button>
     </form>
     <div id="result"></div>
-    <script>
-      const form = document.getElementById('phone-form');
-      const result = document.getElementById('result');
-      const submitBtn = document.getElementById('submit-btn');
-      form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        try {
-          const response = await fetch('/submit', {
-            method: 'POST',
-            body: formData
-          });
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const data = await response.text();
-          result.innerText = data;
-        } catch (error) {
-          console.error('Error:', error);
-          result.innerText = 'An error occurred. Please try again later.';
-        }
-      });
-    </script>
-  </body>
-
-<head>
-    <meta charset="utf-8">
-    <title>Phone Data</title>
-</head>
-<body>
     <table id="phone-table">
         <thead>
             <tr>
@@ -56,12 +26,17 @@
         </tbody>
     </table>
     <script>
-        // Fetch the data from the API
+      const form = document.getElementById('phone-form');
+      const result = document.getElementById('result');
+      const submitBtn = document.getElementById('submit-btn');
+      const tableBody = document.querySelector('#phone-table tbody');
+      // Function to fetch data from API and populate table
+      function populateTable() {
         fetch('https://jasj-inventory.duckdns.org/api/phone')
             .then(response => response.json())
             .then(data => {
-                // Get the table body
-                const tableBody = document.querySelector('#phone-table tbody');
+                // Clear existing rows from table
+                tableBody.innerHTML = '';
                 // Add each row of data to the table
                 data.forEach(row => {
                     // Create a new table row
@@ -86,6 +61,17 @@
                     tableBody.appendChild(tableRow);
                 });
             });
-    </script>
-</body>
-</html>
+      }
+      // Call the populateTable function once when the page loads
+      populateTable();
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        try {
+          const response = await fetch('/submit', {
+            method: 'POST',
+            body: formData
+          });
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
