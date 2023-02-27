@@ -67,6 +67,7 @@
           fetch('https://jasj-inventory.duckdns.org/api/phone')
             .then(response => response.json())
             .then(data => {
+              clearTable();
               for (const row of data) {
                 addRowToTable(row);
               }
@@ -80,6 +81,7 @@
       fetch('https://jasj-inventory.duckdns.org/api/phone')
         .then(response => response.json())
         .then(data => {
+          clearTable();
           for (const row of data) {
             addRowToTable(row);
           }
