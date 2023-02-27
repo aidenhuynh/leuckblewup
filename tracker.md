@@ -18,11 +18,11 @@
     <table id="phone-table">
       <thead>
         <tr>
-          <th>User ID</th>
-          <th>Phone Number</th>
           <th>Location</th>
+          <th>Phone Number</th>
+          <th>Time of Entry</th>
           <th>Timezone</th>
-          <th>Time</th>
+          <th>User ID</th>
         </tr>
       </thead>
       <tbody>
