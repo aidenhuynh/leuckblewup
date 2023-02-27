@@ -73,7 +73,7 @@
             });
         } catch (error) {
           console.error('Error:', error);
-          result.innerText = 'An error occurred. Please try again later.';
+          result.innerText = `An error occurred: ${error.message}`;
         }
       });
       // Fetch the initial data from the API and populate the table
