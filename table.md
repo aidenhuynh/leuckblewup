@@ -67,6 +67,7 @@
     <tr><td></td><td colspan="6"><i id="textRow"></i></td></tr>
 </table>
 
+<i>Note: Click on items in the table to edit them.</i>
 <table>
     <tbody id="bruh">
     <tr>
