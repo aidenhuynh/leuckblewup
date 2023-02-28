@@ -396,12 +396,16 @@ function editData(itemId) {
         }
 
         item.innerHTML = "<input style='width:100%' placeholder='" + dataList[index][type] + "' id='" + itemId + "_input'>"
-        
-        
-        document.getElementById(itemId + '_input').addEventListener("keyup", function() {
-            if (event.key === "Enter") {
+
+        input = document.getElementById(itemId + '_input')
+
+        input.focus()
+        input.addEventListener("keyup", function() {
+            if (event.key === "Escape") {
+                item.innerHTML = "<span>" + dataList[index][type] + "</span>"
+            }
+            else if (event.key === "Enter") {
                 input = document.getElementById(itemId + '_input')
-                console.log(itemId+'_input')
                 if (patternCheck(type, itemId + '_input')) {
                     item.innerHTML = "<span>" + input.value + "</span>"
 
