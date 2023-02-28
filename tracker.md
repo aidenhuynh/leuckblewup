@@ -70,6 +70,14 @@
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
+        const phoneNumberInput = document.getElementById('phone_number');
+        const phoneNumberRegex = /^\+?\d{1,3}[-. ]?\d{3}[-. ]?\d{3}[-. ]?\d{4}$/;
+        if (!phoneNumberRegex.test(phoneNumberInput.value)) {
+          phoneNumberInput.setCustomValidity('Invalid phone number format');
+          phoneNumberInput.reportValidity();
+          return;
+        }
+        phoneNumberInput.setCustomValidity('');
         try {
           const response = await fetch('https://jasj-inventory.duckdns.org/submit', {
             method: 'POST',
