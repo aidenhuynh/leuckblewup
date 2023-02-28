@@ -34,9 +34,12 @@
         {% if site.show_downloads %}
         <table class="navbar">
           <tr>
-            <td style="cursor: pointer" onclick="location.href='/leuckblewup'">Home</td>
-            <td style="cursor: pointer" onclick="location.href='/leuckblewup/table'">Data</td>
-            <td style="cursor: pointer" onclick="location.href='/leuckblewup/tracker'">Tracker</td>
+            <td style="cursor: pointer" onclick="location.href='{{site.baseurl}}'">Home</td>
+            <td style="cursor: pointer" onclick="location.href='{{site.baseurl}}/tracker'">Tracker</td>
+          </tr>
+          <tr>
+            <td style="cursor: pointer" onclick="location.href='{{site.baseurl}}/table'">Aiden's Data</td>
+            <td style="cursor: pointer" onclick="location.href='{{site.baseurl}}/table2'">Samit's Data</td>
           </tr>
         </table>
         {% endif %}

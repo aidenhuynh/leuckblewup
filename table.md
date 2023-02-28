@@ -82,7 +82,7 @@
 <button type="submit" onclick="clearStars();search(dataList)">Clear favorites</button>
 
 <script>
-const mainApi = "http://0.0.0.0:8086/api/mainData/"
+const mainApi = "https://jasj-inventory.duckdns.org/api/mainData"
 
 var uid = "aidenhuynh"
 
