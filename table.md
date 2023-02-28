@@ -83,7 +83,7 @@
 <button type="submit" onclick="clearStars();search(dataList)">Clear favorites</button>
 
 <script>
-const mainApi = "https://jasj-inventory.duckdns.org/api/mainData"
+const mainApi = "https://jasj-inventory.duckdns.org/api/mainData/"
 // const mainApi = "http://127.0.0.1:5000/api/mainData/"
 
 var uid = "aidenhuynh"
@@ -425,7 +425,7 @@ function editData(itemId) {
                                 mode: 'cors',
                                 body: JSON.stringify([uidNum, id, newData]),
                                 method: 'PATCH'
-                                }
+                            }
                             )
                         }
                     }
