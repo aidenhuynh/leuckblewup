@@ -474,5 +474,20 @@ function apiGet() {
     )
 }
 
+function logApi() {
+    fetch(mainApi, optionsGET)
+        .then(response => response.json().then(data => {
+            for (let i = 0; i < data.length; i++) {
+                if (data[i]["uid"] == uid) {
+                    uidNum = i
+                    dataList = data[i]["userData"]
+                }
+            }
+            console.log(dataList)
+            }
+        )
+    )
+}
+
 apiGet()
 </script>
