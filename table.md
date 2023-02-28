@@ -290,7 +290,7 @@ function patternCheck(type, id) {
     value = document.getElementById(id).value
 
     if (type.includes("date")) {
-        if (/^[0-9]{2}-[0-9]{2}-[0-9]{2}/.test(value) == false) {
+        if (/^[0-9]{2}-[0-9]{2}-[0-9]{4}/.test(value) == false) {
             return alert("Invalid input: Date\n\nPlease follow the following format: MM-DD-YYYY"); false
         }
         else {
