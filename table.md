@@ -129,8 +129,6 @@ function getItems(list) {
     }
 }
 
-
-
 function search(list) {
     document.getElementById('bruh').innerHTML = " \
     <tr> \
