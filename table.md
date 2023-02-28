@@ -84,6 +84,7 @@
 
 <script>
 const mainApi = "https://jasj-inventory.duckdns.org/api/mainData"
+// const mainApi = "http://127.0.0.1:5000/api/mainData/"
 
 var uid = "aidenhuynh"
 
