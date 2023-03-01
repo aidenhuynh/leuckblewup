@@ -87,10 +87,10 @@
 <button type="submit" onclick="clearStars();search(dataList)">Clear favorites</button>
 
 <script>
-// const mainApi = "https://jasj-inventory.duckdns.org/api/mainData/"
+const mainApi = "https://jasj-inventory.duckdns.org/api/mainData/"
 // const mainApi = "http://127.0.0.1:5000/api/mainData/"
 // const mainApi = "http://172.20.10.3:8087/api/mainData"
-const mainApi = "http://0.0.0.0:8087/api/mainData"
+// const mainApi = "http://0.0.0.0:8087/api/mainData"
 
 var editStatus = false
 
