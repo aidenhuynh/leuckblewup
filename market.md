@@ -70,11 +70,11 @@
     </label></p>
     <p><label>
         Stock:
-        <input type="text" name="stock" id="stock" placeholder="# of product" pattern="[0-9]{1-5}"required>
+        <input type="text" name="stock" id="stock" placeholder="# of product" pattern="[0-9]{1-5}" required>
     </label></p>
     <p><label>
         Cost:
-        <input type="text" name="cost" id="cost" placeholder="xxxx.xx (in $)" pattern = "[0-9]{1-4}.[0-9]{2}"required>
+        <input type="text" name="cost" id="cost" placeholder="xxxx.xx (in $)" pattern = "[0-9]{1-4}.[0-9]{2}" required>
     </label></p>
     <p>
         <button onclick="myFunction()">Create Product</button>
