@@ -45,6 +45,10 @@
 <label for="searchBar"> Search: <input class="search" name="searchBar" id="searchBar" placeholder="Enter item name here"></label>
 <br><br>
 <label><input type="checkbox" class="check" id="checkBox" onclick="showFavorites(dataList)"> Show favorites only</label>
+<br>
+<i id="searchText"></i>
+<br>
+<i id="checkText"></i>
 <!-- checkbox for showing only favorites -->
 
 <table>
@@ -83,8 +87,12 @@
 <button type="submit" onclick="clearStars();search(dataList)">Clear favorites</button>
 
 <script>
-const mainApi = "https://jasj-inventory.duckdns.org/api/mainData/"
+// const mainApi = "https://jasj-inventory.duckdns.org/api/mainData/"
 // const mainApi = "http://127.0.0.1:5000/api/mainData/"
+// const mainApi = "http://172.20.10.3:8087/api/mainData"
+const mainApi = "http://0.0.0.0:8087/api/mainData"
+
+var editStatus = false
 
 var uid = "aidenhuynh"
 
@@ -131,47 +139,55 @@ function getItems(list) {
 }
 
 function search(list) {
-    document.getElementById('bruh').innerHTML = " \
-    <tr> \
-        <th style='width:auto'></th> \
-        <th style='width:15%'>Date</th> \
-        <th style='width:15%'>Item</th> \
-        <th style='width:13%'>Action</th> \
-        <th style='width:auto; text-align:right'>Quantity</th> \
-        <th></th> \
-    </tr> \
-    "
-
-    results = []
-    input = document.getElementById('searchBar').value.toLowerCase()
-
-    if (input == "" || input == null) {
-        getItems(dataList)
+    if (editStatus == true) {
+        document.getElementById('searchText').innerHTML = " \
+            <br>Please finish making edits before searching. \
+            "
     }
     else {
-        for (let i = 0; i < list.length; i++) {
-            item = list[i]["item"].toLowerCase()
+        document.getElementById('searchText').innerHTML = ""
+        document.getElementById('bruh').innerHTML = " \
+        <tr> \
+            <th style='width:auto'></th> \
+            <th style='width:15%'>Date</th> \
+            <th style='width:15%'>Item</th> \
+            <th style='width:13%'>Action</th> \
+            <th style='width:auto; text-align:right'>Quantity</th> \
+            <th></th> \
+        </tr> \
+        "
 
-            if (item.includes(input) == true) {
-                results.push(list[i])
-            }
-        }
-        if (results.length == 0) {
-            document.getElementById('bruh').innerHTML = " \
-            <tr> \
-                <th style='width:auto'></th> \
-                <th style='width:15%'>Date</th> \
-                <th style='width:15%'>Item</th> \
-                <th style='width:13%'>Action</th> \
-                <th style='width:auto; text-align:right'>Quantity</th> \
-                <th></th> \
-            </tr> \
-            <tr><td></td><td colspan='5'><i>No results found.</i></td></tr> \
-            "
+        results = []
+        input = document.getElementById('searchBar').value.toLowerCase()
+
+        if (input == "" || input == null) {
             getItems(dataList)
         }
         else {
-        getItems(results)
+            for (let i = 0; i < list.length; i++) {
+                item = list[i]["item"].toLowerCase()
+
+                if (item.includes(input) == true) {
+                    results.push(list[i])
+                }
+            }
+            if (results.length == 0) {
+                document.getElementById('bruh').innerHTML = " \
+                <tr> \
+                    <th style='width:auto'></th> \
+                    <th style='width:15%'>Date</th> \
+                    <th style='width:15%'>Item</th> \
+                    <th style='width:13%'>Action</th> \
+                    <th style='width:auto; text-align:right'>Quantity</th> \
+                    <th></th> \
+                </tr> \
+                <tr><td></td><td colspan='5'><i>No results found.</i></td></tr> \
+                "
+                getItems(dataList)
+            }
+            else {
+            getItems(results)
+            }
         }
     }
 }
@@ -200,22 +216,55 @@ function favorite(star) {
 }
 
 function showFavorites(list) {
-    var favoritesList = []
+    if (editStatus == true) {
+        document.getElementById('checkText').innerHTML = "Please finish making edits before trying to show favorites"
+        document.getElementById('checkBox').checked = false
+    }
+    else {
+        document.getElementById('checkText').innerHTML = ""
+        var favoritesList = []
 
-    if (boxStatus == false) {
-        console.log('box status was false')
-        for (let i = 0; i < localStorage.length; i++) {
-            for (let k = 0; k < list.length; k++) {
-                if (localStorage.getItem(localStorage.key(i)).slice(6) == list[k]["id"]) {
-                    favoritesList.push(list[k])
-                    console.log(favoritesList)
+        if (boxStatus == false) {
+            console.log('box status was false')
+            for (let i = 0; i < localStorage.length; i++) {
+                for (let k = 0; k < list.length; k++) {
+                    if (localStorage.getItem(localStorage.key(i)).slice(6) == list[k]["id"]) {
+                        favoritesList.push(list[k])
+                        console.log(favoritesList)
+                    }
                 }
             }
-        }
 
-        if (favoritesList.length !== 0) {
+            if (favoritesList.length !== 0) {
 
-            document.getElementById('bruh').innerHTML = " \
+                document.getElementById('bruh').innerHTML = " \
+                    <tr> \
+                        <th style='width:auto'></th> \
+                        <th style='width:15%'>Date</th> \
+                        <th style='width:15%'>Item</th> \
+                        <th style='width:13%'>Action</th> \
+                        <th style='width:auto; text-align:right'>Quantity</th> \
+                        <th></th> \
+                    </tr> \
+                    "
+            
+                for (let n = 0; n < favoritesList.length; n++) {
+                    var starId = localStorage.getItem(localStorage.key(n))
+
+
+                    document.getElementById('bruh').innerHTML += '\
+                    <tr> \
+                        <td style="text-align:center"><img id="' + starId + `" class="star" onclick="favorite('` + starId + `')" src="images/star.png" height="40px" width="40px"></td>\
+                        <td>` + list[n]["date"] + `</td> \
+                        <td>` + list[n]["item"] + `</td> \
+                        <td>` + list[n]["action"] + `</td> \
+                        <td class="quantity">` + list[n]["quantity"] + `</td> \
+                        <td style="text-align:center"><img id="` + starId + `" class="star" onclick="dataDelete(` + list[n]["id"] + `)" src="images/deletebutton.png" height="15px"</td>
+                    </tr>`
+                }
+            }
+            else {
+                document.getElementById('bruh').innerHTML = " \
                 <tr> \
                     <th style='width:auto'></th> \
                     <th style='width:15%'>Date</th> \
@@ -224,47 +273,20 @@ function showFavorites(list) {
                     <th style='width:auto; text-align:right'>Quantity</th> \
                     <th></th> \
                 </tr> \
+                <tr><td></td><td colspan='5'><i>No favorites found.</i></td></tr> \
                 "
-        
-            for (let n = 0; n < favoritesList.length; n++) {
-                var starId = localStorage.getItem(localStorage.key(n))
-
-
-                document.getElementById('bruh').innerHTML += '\
-                <tr> \
-                    <td style="text-align:center"><img id="' + starId + `" class="star" onclick="favorite('` + starId + `')" src="images/star.png" height="40px" width="40px"></td>\
-                    <td>` + list[n]["date"] + `</td> \
-                    <td>` + list[n]["item"] + `</td> \
-                    <td>` + list[n]["action"] + `</td> \
-                    <td class="quantity">` + list[n]["quantity"] + `</td> \
-                    <td style="text-align:center"><img id="` + starId + `" class="star" onclick="dataDelete(` + list[n]["id"] + `)" src="images/deletebutton.png" height="15px"</td>
-                </tr>`
+                getItems(dataList)
             }
+        
+        boxStatus = true
         }
-        else {
-            document.getElementById('bruh').innerHTML = " \
-            <tr> \
-                <th style='width:auto'></th> \
-                <th style='width:15%'>Date</th> \
-                <th style='width:15%'>Item</th> \
-                <th style='width:13%'>Action</th> \
-                <th style='width:auto; text-align:right'>Quantity</th> \
-                <th></th> \
-            </tr> \
-            <tr><td></td><td colspan='5'><i>No favorites found.</i></td></tr> \
-            "
-            getItems(dataList)
-        }
-    
-    boxStatus = true
-    }
 
-    else {
-        console.log('box status was true')
-        search(dataList)
-        boxStatus = false
+        else {
+            console.log('box status was true')
+            search(dataList)
+            boxStatus = false
+        }
     }
-    
 }
 
 function clearStars() {
@@ -382,6 +404,8 @@ function editData(itemId) {
     var id = itemId.slice(itemId.indexOf("_")+1)
     var input = ""
 
+    editStatus = true
+
     for (let i = 0; i < dataTypes.length; i++) {
         if (itemId.includes(dataTypes[i])) {
             type = dataTypes[i]
@@ -402,6 +426,7 @@ function editData(itemId) {
         input.focus()
         input.addEventListener("keyup", function() {
             if (event.key === "Escape") {
+                editStatus = false
                 item.innerHTML = "<span>" + dataList[index][type] + "</span>"
             }
             else if (event.key === "Enter") {
@@ -412,7 +437,8 @@ function editData(itemId) {
                     for (let i = 0; i < dataList.length; i++) {
                         if (dataList[i]["id"] == id) {
                             dataList[i][type] = input.value
-                        
+                            editStatus = false
+
                             newData = {
                                 "id": dataList[i]["id"],
                                 "date": dataList[i]["date"],
