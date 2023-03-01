@@ -54,15 +54,24 @@
   </tr>
   <tr>
     <td>1677663382724</td>
+    <td>02/18/2022</td>
     <td>Jonathan</td>
     <td>8</td>
     <td>1246.82</td>
   </tr>
   <tr>
     <td>1699432182724</td>
+    <td>11/29/2018
     <td>PVC Pipes 4x10</td>
     <td>146</td>
     <td>18.95</td>
+  </tr>
+    <tr>
+    <td>1786432115329</td>
+    <td>02/05/2023
+    <td>Decorative Confetti (20 g)</td>
+    <td>28</td>
+    <td>5.60</td>
   </tr>
   </thead>
   <tbody id="result">
@@ -224,7 +233,7 @@
 
   function myFunction() {
   var table = document.getElementById("table1");
-  var row = table.insertRow(0);
+  var row = table.insertRow(-1);
   var cell1 = row.insertCell(0);
   var cell2 = row.insertCell(1);
   var cell3 = row.insertCell(2);
