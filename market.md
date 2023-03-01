@@ -66,7 +66,7 @@
     <td>146</td>
     <td>18.95</td>
   </tr>
-    <tr>
+  <tr>
     <td>1786432115329</td>
     <td>02/05/2023
     <td>Decorative Confetti (20 g)</td>
