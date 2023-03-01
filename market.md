@@ -61,14 +61,14 @@
   </tr>
   <tr>
     <td>1699432182724</td>
-    <td>11/29/2018
+    <td>11/29/2018</td>
     <td>PVC Pipes 4x10</td>
     <td>146</td>
     <td>18.95</td>
   </tr>
   <tr>
     <td>1786432115329</td>
-    <td>02/05/2023
+    <td>02/05/2023</td>
     <td>Decorative Confetti (20 g)</td>
     <td>28</td>
     <td>5.60</td>
