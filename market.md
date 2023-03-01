@@ -76,7 +76,7 @@
     <tr>
     <td>1774563825121</td>
     <td>02/25/2023</td>
-    <td>Lipo Batteries (200kJ)</td>
+    <td>Lipo Batteries (200 kJ)</td>
     <td>16</td>
     <td>25.75</td>
   </tr>
@@ -93,6 +93,28 @@
     <td>Ink Cartridges (50 mL)</td>
     <td>35</td>
     <td>7.00</td>
+  </tr>
+    </tr>
+    <tr>
+    <td>1792435757831</td>
+    <td>02/25/2023</td>
+    <td>Lipo Batteries (200 kJ)</td>
+    <td>16</td>
+    <td>25.75</td>
+  </tr>
+  <tr>
+    <td>1822453679592</td>
+    <td>2/25/2023</td>
+    <td>The Kiss Acrylic Painting</td>
+    <td>3</td>
+    <td>2500.00</td>
+  </tr>
+  <tr>
+    <td>1818253749673</td>
+    <td>03/01/2023</td>
+    <td>Nike ZoomX Vaporfly</td>
+    <td>506</td>
+    <td>149.97</td>
   </tr>
   </thead>
   <tbody id="result">
