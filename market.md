@@ -47,10 +47,22 @@
   <thead>
   <tr>
     <th>ID</th>
-    <th>Email</th>
+    <th>Date</th>
     <th>Product</th>
     <th>Stock</th>
     <th>Cost</th>
+  </tr>
+  <tr>
+    <td>1677663382724</td>
+    <td>Jonathan</td>
+    <td>8</td>
+    <td>1246.82</td>
+  </tr>
+  <tr>
+    <td>1699432182724</td>
+    <td>PVC Pipes 4x10</td>
+    <td>146</td>
+    <td>18.95</td>
   </tr>
   </thead>
   <tbody id="result">
@@ -209,18 +221,6 @@
 
     resultContainer.appendChild(tr);
   }
-
-  table.insertRow(0);
-  var cell1 = row.insertCell(0);
-  var cell2 = row.insertCell(1);
-  var cell3 = row.insertCell(2);
-  var cell4 = row.insertCell(3);
-  var cell5 = row.insertCell(4);
-  cell1.innerHTML = "1677662332731";
-  cell2.innerHTML = "12/09/2022";
-  cell3.innerHTML = "jonathan";
-  cell4.innerHTML = "8";
-  cell5.innerHTML = "1246.82";
 
   function myFunction() {
   var table = document.getElementById("table1");
