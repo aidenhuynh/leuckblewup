@@ -73,6 +73,27 @@
     <td>28</td>
     <td>5.60</td>
   </tr>
+    <tr>
+    <td>1774563825121</td>
+    <td>02/25/2023</td>
+    <td>Lipo Batteries (200kJ)</td>
+    <td>16</td>
+    <td>25.75</td>
+  </tr>
+  <tr>
+    <td>1651832292724</td>
+    <td>11/30/2019</td>
+    <td>Andrew</td>
+    <td>19</td>
+    <td>1.00</td>
+  </tr>
+  <tr>
+    <td>1725432895129</td>
+    <td>02/07/2022</td>
+    <td>Ink Cartridges (50 mL)</td>
+    <td>35</td>
+    <td>7.00</td>
+  </tr>
   </thead>
   <tbody id="result">
     <!-- javascript generated data -->
