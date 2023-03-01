@@ -94,8 +94,7 @@
     <td>35</td>
     <td>7.00</td>
   </tr>
-    </tr>
-    <tr>
+  <tr>
     <td>1792435757831</td>
     <td>02/25/2023</td>
     <td>Lipo Batteries (200 kJ)</td>
